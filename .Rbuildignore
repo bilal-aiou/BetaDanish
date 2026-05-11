@@ -1,0 +1,12 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^\.gitignore$
+^cran_submission\.R$
+^BetaDanish_Package_Development_Guide\.md$
+^data-raw$
+^.*\.docx$
+^.*\.pdf$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
