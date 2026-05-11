@@ -69,10 +69,11 @@ sim_data <- rbetadanish(n = 100, a = 1.5, b = 2.0, c = 3.0, k = 0.5)
 
 ## 4. Fitting Models to Data
 
-The [`fit_betadanish()`](../reference/fit_betadanish.md) function is the
-core MLE engine. It uses a multi-start optimization strategy to ensure
-global convergence and strictly enforces positivity constraints via
-log-scale reparameterization.
+The
+[`fit_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_betadanish.md)
+function is the core MLE engine. It uses a multi-start optimization
+strategy to ensure global convergence and strictly enforces positivity
+constraints via log-scale reparameterization.
 
 ### Example 1: Uncensored Data (Bladder Cancer Remission)
 
@@ -107,9 +108,9 @@ plot(fit_full, type = "all")
 
 The `transplant` dataset contains survival times for 91 patients,
 including right-censored observations. The
-[`fit_betadanish()`](../reference/fit_betadanish.md) function natively
-handles [`survival::Surv`](https://rdrr.io/pkg/survival/man/Surv.html)
-objects.
+[`fit_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_betadanish.md)
+function natively handles
+[`survival::Surv`](https://rdrr.io/pkg/survival/man/Surv.html) objects.
 
 ``` r
 
@@ -131,8 +132,9 @@ survival models force the survival curve to zero, which misrepresents
 the data.
 
 The `BetaDanish` package provides the
-[`fit_bd_cure()`](../reference/fit_bd_cure.md) function to fit both
-**Mixture** and **Promotion-Time (Non-Mixture)** cure models.
+[`fit_bd_cure()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_bd_cure.md)
+function to fit both **Mixture** and **Promotion-Time (Non-Mixture)**
+cure models.
 
 ``` r
 
@@ -153,7 +155,8 @@ summary(cure_fit)
 
 To justify the use of the Beta-Danish distribution, you can benchmark it
 against classical distributions (Weibull, Gamma, Log-Normal, etc.) using
-the [`compare_distributions()`](../reference/compare_distributions.md)
+the
+[`compare_distributions()`](https://bilal-aiou.github.io/BetaDanish/reference/compare_distributions.md)
 function. *(Note: This requires the `flexsurv` package).*
 
 ``` r

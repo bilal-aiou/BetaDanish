@@ -147,7 +147,8 @@ BetaDanish currently focuses primarily on complete and right-censored
 survival data. Users should check convergence, compare alternative
 models, and inspect diagnostic plots before drawing final conclusions.
 Covariate modeling is available through dedicated advanced functions
-such as [`fit_bd_aft()`](reference/fit_bd_aft.md).
+such as
+[`fit_bd_aft()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_bd_aft.md).
 
 ## License
 
