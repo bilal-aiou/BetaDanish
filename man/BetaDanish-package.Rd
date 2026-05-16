@@ -5,7 +5,7 @@
 \alias{BetaDanish-package}
 \title{BetaDanish: The Beta-Danish Distribution for Lifetime Data Analysis}
 \description{
-Implements the four-parameter Beta-Danish distribution and its three-parameter submodel for survival and reliability analysis. Provides functions for density, distribution, quantile, hazard, and random generation. Includes Maximum Likelihood Estimation (MLE) for complete and right-censored data, goodness-of-fit assessment, comparison with standard lifetime distributions, and publication-quality visualizations. Advanced modules support Accelerated Failure Time (AFT) regression, mixture and promotion-time cure models, and competing risks analysis.
+Implements the four-parameter Beta-Danish distribution and its three-parameter submodel for survival and reliability analysis, based on Ahmad and Danish (2025) \doi{10.2478/jamsi-2025-0010}. Provides functions for density, distribution, quantile, hazard, and random generation. Includes maximum likelihood estimation for complete and right-censored data, goodness-of-fit assessment, comparison with standard lifetime distributions, and publication-quality visualizations. Advanced modules support Accelerated Failure Time (AFT) regression, mixture and promotion-time cure models, and competing risks analysis.
 }
 \details{
 The `BetaDanish` package provides a comprehensive suite of tools for survival 
@@ -19,6 +19,14 @@ Failure Time (AFT) regression, cure-rate models, and competing risks analysis.
 Ahmad, B. (2026). Modeling Diverse Survival Patterns: The Development and 
 Characterization of a New Four-Parameter Lifetime Distribution (Ph.D. Thesis). 
 Allama Iqbal Open University, Islamabad.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/bilal-aiou/BetaDanish}
+  \item Report bugs at \url{https://github.com/bilal-aiou/BetaDanish/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Bilal Ahmad \email{bilalahmad.imcbh9@gmail.com}

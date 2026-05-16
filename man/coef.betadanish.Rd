@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A named numeric vector of maximum likelihood parameter estimates.
+}
 \description{
 Extract Coefficients
 }

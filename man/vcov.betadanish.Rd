@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A numeric variance-covariance matrix for the estimated model parameters.
+}
 \description{
 Extract Variance-Covariance Matrix
 }

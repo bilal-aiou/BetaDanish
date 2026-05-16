@@ -6,6 +6,8 @@
 #' @param x A fitted `betadanish` object.
 #' @param type Character string specifying the plot type: `"survival"`, `"hazard"`,
 #'   `"density"`, `"pp"`, `"qq"`, or `"all"`.
+#'
+#' @return Invisibly returns the input betadanish object. Called mainly for its side effect of producing diagnostic plots.
 #' @param ... Additional arguments passed to the base `plot` function.
 #' @export
 plot.betadanish <- function(x, type = c("survival", "hazard", "density", "pp", "qq", "all"), ...) {

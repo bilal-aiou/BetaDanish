@@ -1,10 +1,7 @@
 # BetaDanish: The Beta-Danish Distribution for Lifetime Data Analysis
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml)
-[![CRAN status](https://www.r-pkg.org/badges/version/BetaDanish)](https://CRAN.R-project.org/package=BetaDanish)
-[![Downloads](https://cranlogs.r-pkg.org/badges/BetaDanish)](https://CRAN.R-project.org/package=BetaDanish)
-[![License: GPL-3](https://img.shields.io/badge/License-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL-3](https://img.shields.io/badge/License-GPL--3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 <!-- badges: end -->
 
 The **BetaDanish** R package provides a comprehensive suite of tools for survival and reliability analysis using the highly flexible four-parameter Beta-Danish distribution and its three-parameter submodel.

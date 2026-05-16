@@ -24,17 +24,14 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Assuming a CSV file exists at "data.csv"
-#' # Read uncensored data
-#' dat <- read_survival_data("data.csv", time_col = "survival_time")
-#'
-#' # Read censored data with covariates
-#' dat <- read_survival_data("data.csv",
-#'                           time_col = "time",
-#'                           status_col = "event",
-#'                           covar_cols = c("age", "treatment"))
-#' }
+#' tmp <- tempfile(fileext = ".csv")
+#' example_data <- data.frame(
+#'   survival_time = c(5, 8, 12, 16),
+#'   status = c(1, 1, 0, 1)
+#' )
+#' write.csv(example_data, tmp, row.names = FALSE)
+#' dat <- read_survival_data(tmp, time_col = "survival_time", status_col = "status")
+#' unlink(tmp)
 read_survival_data <- function(file, time_col, status_col = NULL, covar_cols = NULL) {
 
   if (!file.exists(file)) {

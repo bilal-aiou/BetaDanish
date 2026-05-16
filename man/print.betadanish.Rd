@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+Invisibly returns the input betadanish object. Called mainly for its side effect of printing the fitted model summary.
+}
 \description{
 Print Method for Beta-Danish Fit
 }

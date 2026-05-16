@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+Invisibly returns the input summary.betadanish object. Called mainly for its side effect of printing the coefficient table and fit statistics.
+}
 \description{
 Print Summary Method for Beta-Danish Fit
 }

@@ -14,6 +14,9 @@
 
 \item{...}{Additional arguments passed to the base `plot` function.}
 }
+\value{
+Invisibly returns the input betadanish object. Called mainly for its side effect of producing diagnostic plots.
+}
 \description{
 Generates diagnostic plots for a fitted Beta-Danish model, including survival,
 hazard, density, PP, and QQ plots.

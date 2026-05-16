@@ -1,6 +1,8 @@
 #' Print Method for Beta-Danish Fit
 #'
 #' @param x An object of class `betadanish`.
+#'
+#' @return Invisibly returns the input betadanish object. Called mainly for its side effect of printing the fitted model summary.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 print.betadanish <- function(x, ...) {
@@ -18,6 +20,8 @@ print.betadanish <- function(x, ...) {
 #' Summary Method for Beta-Danish Fit
 #'
 #' @param object An object of class `betadanish`.
+#'
+#' @return An object of class summary.betadanish containing coefficient estimates, standard errors, test statistics, p-values, log-likelihood, and model selection criteria.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 summary.betadanish <- function(object, ...) {
@@ -62,6 +66,8 @@ summary.betadanish <- function(object, ...) {
 #' Print Summary Method for Beta-Danish Fit
 #'
 #' @param x An object of class `summary.betadanish`.
+#'
+#' @return Invisibly returns the input summary.betadanish object. Called mainly for its side effect of printing the coefficient table and fit statistics.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 print.summary.betadanish <- function(x, ...) {
@@ -85,6 +91,8 @@ print.summary.betadanish <- function(x, ...) {
 #' Extract Log-Likelihood
 #'
 #' @param object An object of class `betadanish`.
+#'
+#' @return An object of class logLik containing the maximized log-likelihood value, with degrees of freedom and number of observations stored as attributes.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 logLik.betadanish <- function(object, ...) {
@@ -98,6 +106,8 @@ logLik.betadanish <- function(object, ...) {
 #' Extract Variance-Covariance Matrix
 #'
 #' @param object An object of class `betadanish`.
+#'
+#' @return A numeric variance-covariance matrix for the estimated model parameters.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 vcov.betadanish <- function(object, ...) {
@@ -107,6 +117,8 @@ vcov.betadanish <- function(object, ...) {
 #' Extract Coefficients
 #'
 #' @param object An object of class `betadanish`.
+#'
+#' @return A named numeric vector of maximum likelihood parameter estimates.
 #' @param ... Further arguments passed to or from other methods.
 #' @export
 coef.betadanish <- function(object, ...) {

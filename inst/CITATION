@@ -1,10 +1,11 @@
-citHeader("To cite BetaDanish in publications, please use:")
-
-citEntry(
-  entry = "Manual",
-  title = "BetaDanish: The Beta-Danish Distribution for Lifetime Data Analysis",
-  author = personList(person("Bilal", "Ahmad")),
+bibentry(
+  bibtype = "Manual",
+  title = "BetaDanish: Estimation and Diagnostics for the Beta-Danish Distribution",
+  author = c(
+    person("Bilal", "Ahmad", email = "bilalahmad.imcbh9@gmail.com", role = c("aut", "cre"))
+  ),
   year = "2026",
   note = "R package version 0.1.0",
   url = "https://github.com/bilal-aiou/BetaDanish"
 )
+

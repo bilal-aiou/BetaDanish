@@ -11,6 +11,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+An object of class logLik containing the maximized log-likelihood value, with degrees of freedom and number of observations stored as attributes.
+}
 \description{
 Extract Log-Likelihood
 }
