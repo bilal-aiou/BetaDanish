@@ -1,7 +1,6 @@
 ---
 title: "Cure Models with the Beta-Danish Distribution"
 author: "Bilal Ahmad"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Cure Models with the Beta-Danish Distribution}
@@ -9,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -20,59 +19,68 @@ knitr::opts_chunk$set(
 )
 ```
 
-## 1. Two cure formulations
+## Two cure formulations
 
-The package implements two cure formulations on the Exponentiated
-Danish kernel: the mixture cure model and the promotion-time
-(non-mixture) cure model.
+The package implements two cure formulations on the Exponentiated Danish
+kernel:
 
-## 2. Bone marrow transplant data
+- **Mixture cure** splits the population into a susceptible fraction
+  `pi(Z)` modelled by logistic regression on the incidence covariates,
+  and a cured fraction `1 - pi(Z)`.
+- **Promotion-time cure** derives the cure fraction from a latent
+  Poisson process of clonogenic cells with intensity
+  `theta(Z) = exp(Z' gamma)`; the cure fraction is `exp(-theta(Z))`.
 
-```{r}
+Both are fitted via `fit_bd_cure()`.
+
+## Quick example
+
+Both fits below use simulated data with a known cure structure.
+
+```{r example}
 library(BetaDanish)
-data("transplant")
-str(transplant)
+set.seed(2026)
+n <- 250
+z <- stats::rbinom(n, 1, 0.5)
+pi_susc <- stats::plogis(0.3 + 0.7 * z)
+cured   <- stats::rbinom(n, 1, 1 - pi_susc) == 1
+T_true  <- ifelse(cured, Inf,
+                  rbetadanish(n, a = 1, b = 2, c = 1.5, k = 0.4))
+C   <- stats::rexp(n, 0.04)
+time   <- pmin(T_true, C)
+status <- ifelse(T_true <= C, 1, 0)
+dat <- data.frame(time = time, status = status, z = z)
+cat("Sample size:", n, " Censoring rate:", round(mean(status == 0), 2), "\n")
 ```
 
-## 3. Promotion-time cure model
+## Mixture cure model
 
-```{r}
-fit_prom <- fit_bd_cure(
-  formula_aft  = survival::Surv(time, status) ~ 1,
-  formula_cure = ~ group,
-  data         = transplant,
-  type         = "promotion",
-  n_starts     = 3
-)
-summary(fit_prom)
-```
-
-## 4. Mixture cure model
-
-```{r}
+```{r mix, error = TRUE}
 fit_mix <- fit_bd_cure(
   formula_aft  = survival::Surv(time, status) ~ 1,
-  formula_cure = ~ group,
-  data         = transplant,
+  formula_cure = ~ z,
+  data         = dat,
   type         = "mixture",
   n_starts     = 3
 )
 summary(fit_mix)
 ```
 
-## 5. Model comparison
+## Promotion-time cure model
 
-```{r}
-data.frame(
-  Model  = c("Promotion-time", "Mixture"),
-  logLik = c(fit_prom$logLik, fit_mix$logLik),
-  AIC    = c(fit_prom$AIC,    fit_mix$AIC),
-  BIC    = c(fit_prom$BIC,    fit_mix$BIC)
+```{r prom, error = TRUE}
+fit_prom <- fit_bd_cure(
+  formula_aft  = survival::Surv(time, status) ~ 1,
+  formula_cure = ~ z,
+  data         = dat,
+  type         = "promotion",
+  n_starts     = 3
 )
+summary(fit_prom)
 ```
 
-## 6. Cox-Snell residual diagnostic
+## See also
 
-```{r}
-plot(fit_mix)
-```
+- `?fit_bd_cure` for full documentation
+- `?bd_bootstrap_ci` for bootstrap confidence intervals
+- `?plot.bd_cure` for Cox-Snell residual plots

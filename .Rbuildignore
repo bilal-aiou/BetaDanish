@@ -15,3 +15,5 @@
 ^.*\.Rcheck$
 ^codecov\.yml$
 ^CRAN-RELEASE$
+^doc$
+^Meta$
