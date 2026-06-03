@@ -1,4 +1,88 @@
 url: https://bilal-aiou.github.io/BetaDanish/
+
 template:
   bootstrap: 5
+  bootswatch: cosmo
 
+home:
+  title: BetaDanish
+  description: >
+    Beta-Danish Distribution for Survival and Reliability Analysis
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+
+reference:
+  - title: Distribution functions
+    desc: Core d/p/q/r/h functions for the Beta-Danish distribution
+    contents:
+      - BetaDanish
+      - dbetadanish
+      - pbetadanish
+      - qbetadanish
+      - rbetadanish
+      - hbetadanish
+  - title: Maximum likelihood estimation
+    contents:
+      - fit_betadanish
+      - gof_betadanish
+      - compare_models
+      - compare_distributions
+  - title: Bayesian estimation
+    contents:
+      - bayes_betadanish
+  - title: AFT regression
+    contents:
+      - fit_bd_aft
+  - title: Cure models
+    contents:
+      - fit_bd_cure
+      - simulate_bd_cure_data
+  - title: Competing risks
+    contents:
+      - fit_bd_competing
+      - cif_betadanish
+      - cif_compare
+  - title: Structural properties
+    contents:
+      - bd_entropy_shannon
+      - bd_order_stat_pdf
+  - title: Diagnostics and plots
+    contents:
+      - plot.betadanish
+      - plot.bd_aft
+  - title: S3 methods
+    contents:
+      - summary.betadanish
+      - print.betadanish
+      - print.summary.betadanish
+      - coef.betadanish
+      - vcov.betadanish
+      - logLik.betadanish
+  - title: Reports and pipelines
+    contents:
+      - analyze_betadanish
+      - report_betadanish
+      - read_survival_data
+      - simulate_bd_data
+  - title: Datasets
+    contents:
+      - remission
+      - carbon_fibres
+      - transplant
+      - aarset
+      - leukemia
+      - melanoma
+      - brain_cancer
+
+articles:
+  - title: User guides
+    navbar: ~
+    contents:
+      - BetaDanish_Introduction
+      - betadanish-case-study
+      - bd-bayesian
+      - bd-competing-risks
+      - bd-cure-models
