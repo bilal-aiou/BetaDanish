@@ -22,13 +22,15 @@ Diagnostic Cox-Snell residual plot for a fitted AFT or cure model.
 }
 \examples{
 \donttest{
-set.seed(1)
-n <- 200; x <- stats::rnorm(n)
+set.seed(42)
+n <- 300
+x <- stats::rnorm(n)
 k <- exp(-0.5 - 0.3 * x)
 t_sim <- rbetadanish(n, a = 1, b = 2, c = 1.5, k = k)
-dat <- data.frame(time = t_sim, status = 1, x = x)
+status <- stats::rbinom(n, 1, 0.85)  # ~15\% censoring
+dat <- data.frame(time = t_sim, status = status, x = x)
 fit <- fit_bd_aft(survival::Surv(time, status) ~ x, data = dat,
-                  n_starts = 2)
+                  n_starts = 5)
 plot(fit)
 }
 

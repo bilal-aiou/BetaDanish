@@ -9,13 +9,15 @@
 #'
 #' @examples
 #' \donttest{
-#' set.seed(1)
-#' n <- 200; x <- stats::rnorm(n)
+#' set.seed(42)
+#' n <- 300
+#' x <- stats::rnorm(n)
 #' k <- exp(-0.5 - 0.3 * x)
 #' t_sim <- rbetadanish(n, a = 1, b = 2, c = 1.5, k = k)
-#' dat <- data.frame(time = t_sim, status = 1, x = x)
+#' status <- stats::rbinom(n, 1, 0.85)  # ~15% censoring
+#' dat <- data.frame(time = t_sim, status = status, x = x)
 #' fit <- fit_bd_aft(survival::Surv(time, status) ~ x, data = dat,
-#'                   n_starts = 2)
+#'                   n_starts = 5)
 #' plot(fit)
 #' }
 #'
@@ -39,12 +41,33 @@ plot.bd_cure <- function(x, ...) {
   c <- as.numeric(x$coefficients["c"])
   delta_names <- grep("^delta_", names(x$coefficients), value = TRUE)
   delta <- as.numeric(x$coefficients[delta_names])
+
+  ## Guards: if any parameter is NA, refuse to plot
+  if (!is.finite(b) || !is.finite(c) || any(!is.finite(delta))) {
+    warning("Cox-Snell plot: fitted coefficients contain NA/NaN; cannot compute residuals.",
+            call. = FALSE)
+    return(invisible(x))
+  }
   if (length(delta) != ncol(X))
     stop("AFT/cure coefficient layout does not match the design matrix.")
   k_i <- exp(as.numeric(X %*% delta))
   r <- -pbetadanish(time, a = 1, b = b, c = c, k = k_i,
                     lower.tail = FALSE, log.p = TRUE)
-  r[!is.finite(r)] <- NA
+
+  ## Drop any non-finite residuals so survfit doesn't see all-NA input
+  keep <- is.finite(r)
+  if (!any(keep)) {
+    warning("Cox-Snell plot: all residuals are non-finite; cannot plot.",
+            call. = FALSE)
+    return(invisible(x))
+  }
+  if (sum(keep) < length(r)) {
+    warning(sprintf("Cox-Snell plot: dropped %d non-finite residuals.",
+                    sum(!keep)), call. = FALSE)
+  }
+  r      <- r[keep]
+  status <- status[keep]
+
   km_r <- survival::survfit(survival::Surv(r, status) ~ 1)
   H_r  <- -log(pmax(km_r$surv, 1e-12))
   graphics::plot(km_r$time, H_r, type = "s",
