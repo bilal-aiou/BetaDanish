@@ -15,6 +15,7 @@ Benchmarking
 betadanish
 Borgan
 burnin
+cdot
 CED
 CIF
 clonogenic
@@ -30,9 +31,11 @@ doi
 ED
 et
 factorises
+Famoye
 fibre
 Fibres
 flexsurv
+frac
 Gba
 hbetadanish
 HPD
@@ -42,6 +45,7 @@ Johansen
 Kaplan
 Keiding
 Kronrod
+kz
 Lifecycle
 logLik
 logS
@@ -69,9 +73,11 @@ pkgdown
 positivity
 qbetadanish
 qq
+qquad
 rbetadanish
 README
 readxl
+regularised
 reparameterization
 roxygen
 Shannon
