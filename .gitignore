@@ -1,3 +1,10 @@
 .Rproj.user
-inst/doc
-docs
+.Rhistory
+.RData
+.Ruserdata
+*.Rcheck/
+*.tar.gz
+.DS_Store
+docs/
+pkgdown/
+inst/doc/

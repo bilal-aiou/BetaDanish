@@ -1,18 +1,15 @@
 # BetaDanish: The Beta-Danish Distribution for Lifetime Data Analysis
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml)
 [![License: GPL-3](https://img.shields.io/badge/License-GPL--3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 <!-- badges: end -->
 
-The **BetaDanish** R package provides a comprehensive suite of tools for survival and reliability analysis using the highly flexible four-parameter Beta-Danish distribution and its three-parameter submodel.
+The **BetaDanish** R package provides a comprehensive suite of tools for survival and reliability analysis using the four-parameter Beta-Danish distribution and its three-parameter Exponentiated Danish (ED) submodel.
 
-Developed as part of doctoral research at the Department of Statistics, Allama Iqbal Open University (AIOU), Islamabad, this package addresses the limitations of classical distributions (like the Weibull or Gamma) by accommodating decreasing, increasing, unimodal, and bathtub-shaped hazard rates.
-
+Developed at the Department of Statistics, Allama Iqbal Open University (AIOU), Islamabad, the package addresses the limitations of classical lifetime models by accommodating decreasing, increasing, unimodal, and bathtub-shaped hazard rates in a single unified family.
 
 ## Why use BetaDanish?
-
-The Beta-Danish distribution is useful when classical lifetime models are too restrictive. 
-It provides additional flexibility for modeling complex hazard-rate shapes commonly observed in survival, reliability, and biomedical data.
 
 | Model | Typical hazard shape | Flexibility |
 |---|---|---|
@@ -21,109 +18,104 @@ It provides additional flexibility for modeling complex hazard-rate shapes commo
 | Gamma | Flexible but limited | Moderate |
 | Log-normal | Non-monotone | Moderate |
 | Log-logistic | Non-monotone | Moderate |
-| Beta-Danish | Increasing, decreasing, unimodal, bathtub-shaped | High |
+| Beta-Danish | Increasing, decreasing, unimodal, bathtub | High |
 
-## Features
+## Features (v0.2.0)
 
-* **Core Mathematics:** Numerically stable implementations of the density (`d`), distribution (`p`), quantile (`q`), random generation (`r`), and hazard (`h`) functions.
-* **Robust Estimation:** Maximum Likelihood Estimation (MLE) engine supporting both complete and right-censored data via `survival::Surv` objects.
-* **Model Comparison:** Automated benchmarking against standard lifetime distributions (Weibull, Log-Normal, Log-Logistic, Gamma, Exponential) with ranked Goodness-of-Fit tables.
-* **Advanced Modules:** 
-  * Accelerated Failure Time (AFT) regression.
-  * Mixture and Promotion-Time (Non-Mixture) Cure Models.
-  * Competing Risks analysis assuming independent latent failure times.
-* **Publication-Ready Plots:** Built-in S3 methods for plotting survival, hazard, density, P-P, and Q-Q plots.
+* **Core distribution**: numerically stable d/p/q/r/h/s/logS for the Beta-Danish and the Danish baseline.
+* **MLE inference**: complete and right-censored data with delta-method standard errors, multi-start optimization, and AIC/BIC stored at fit time.
+* **Bayesian inference**: `bayes_betadanish()` random-walk Metropolis sampler (requires `MCMCpack`).
+* **AFT regression** and **mixture / promotion-time cure models**.
+* **Competing risks**: bound-constrained multi-start L-BFGS-B with formula interface, Aalen-Johansen overlay, and Gray's test (`cif_compare()`).
+* **Structural properties**: moments with existence checks, probability-weighted moments, mean residual life, Shannon entropy, order statistics, stress-strength reliability, and a Glaser-type hazard-shape classifier.
+* **Diagnostics**: survival, hazard, density, P-P, Q-Q, and Cox-Snell residual plots for `betadanish`, `bd_aft`, and `bd_cure` fits.
+* **Goodness-of-fit**: KS, Cramer-von Mises, Anderson-Darling, plus a 7-distribution `flexsurv` comparator.
+* **Tooling**: bootstrap confidence intervals (`bd_bootstrap_ci`) and a finite-sample simulation-study runner (`bd_mle_study`).
 
 ## Installation
 
-You can install the development version of BetaDanish from GitHub using the `devtools` package:
-
 ```r
+# Development version
 # install.packages("devtools")
 devtools::install_github("bilal-aiou/BetaDanish")
+
+# Optional Suggests for full functionality:
+install.packages(c("MCMCpack", "coda", "cmprsk", "flexsurv", "MASS"))
 ```
 
 ## Quick Start
 
-### 1. Basic Distribution Functions
-
 ```r
 library(BetaDanish)
+data("remission")
 
-# Generate 100 random survival times
-set.seed(2026)
-sim_data <- rbetadanish(n = 100, a = 1.5, b = 2.0, c = 3.0, k = 0.5)
-
-# Calculate the hazard rate at time t = 2
-hbetadanish(x = 2, a = 1.5, b = 2.0, c = 3.0, k = 0.5)
-```
-
-### 2. Fitting a Model to Data
-
-The package includes several built-in datasets, such as `remission` (bladder cancer remission times).
-
-```r
-# Load built-in dataset
-data("remission", package = "BetaDanish")
-
-# Fit the 4-parameter Beta-Danish model
+# Fit the four-parameter Beta-Danish model
 fit <- fit_betadanish(survival::Surv(time, status) ~ 1, data = remission)
-
-# View the summary (Estimates, Standard Errors, p-values, AIC/BIC)
 summary(fit)
+plot(fit, type = "all")        # 6 diagnostic panels including Cox-Snell
 
-# Generate all diagnostic plots (Survival, Hazard, Density, PP, QQ)
-plot(fit, type = "all")
-```
+# Test the submodel hypothesis a = 1 against the full model
+fit_sub <- fit_betadanish(survival::Surv(time, status) ~ 1,
+                          data = remission, submodel = TRUE)
+compare_models(fit, fit_sub)
 
-### 3. Comparing Models
-
-You can easily compare the 4-parameter full model against the 3-parameter submodel (where `a = 1`), or benchmark it against standard distributions.
-
-```r
-# Fit the 3-parameter submodel
-fit_sub <- fit_betadanish(survival::Surv(time, status) ~ 1, data = remission, submodel = TRUE)
-
-# Likelihood Ratio Test
-compare_models(full_model = fit, sub_model = fit_sub)
-
-# Benchmark against Weibull, Gamma, Log-Normal, etc. (requires 'flexsurv')
+# Benchmark against seven standard distributions
 compare_distributions(fit)
 ```
 
-### 4. Advanced: Cure Models
-
-For datasets with long-term survivors (e.g., the built-in `transplant` dataset), you can fit mixture or promotion-time cure models.
+## Bayesian estimation
 
 ```r
-data("transplant", package = "BetaDanish")
-
-# Fit a mixture cure model (latency ~ 1, cure fraction ~ group)
-cure_fit <- fit_bd_cure(
-  formula_aft = survival::Surv(time, status) ~ 1, 
-  formula_cure = ~ group, 
-  data = transplant, 
-  type = "mixture"
-)
-
-summary(cure_fit)
+fit_bayes <- bayes_betadanish(
+  time = remission$time, status = remission$status,
+  submodel = TRUE, burnin = 2000, mcmc = 5000, seed = 1)
+fit_bayes$summary
 ```
 
-## Automated Pipeline
-
-For a quick, end-to-end analysis of your own CSV data, use the automated reporting function:
+## Cure models
 
 ```r
-# analyze_betadanish("path/to/your_data.csv", time_col = "time", status_col = "status")
+data("transplant")
+fit_cure <- fit_bd_cure(
+  formula_aft  = survival::Surv(time, status) ~ 1,
+  formula_cure = ~ group,
+  data         = transplant,
+  type         = "mixture")
+summary(fit_cure)
+plot(fit_cure)                 # Cox-Snell residuals
 ```
 
+## Competing risks
 
-## Limitations
+```r
+set.seed(1)
+T1 <- rbetadanish(300, 1.2, 1.5, 1.0, 0.4)
+T2 <- rbetadanish(300, 1.0, 2.0, 1.0, 0.2)
+C  <- stats::rexp(300, 0.05)
+time <- pmin(T1, T2, C)
+cause <- ifelse(time == C, 0L, ifelse(T1 <= T2, 1L, 2L))
+fit_cr <- fit_bd_competing(time = time, cause = cause, n_restarts = 5)
+cif_compare(fit_cr)            # Aalen-Johansen overlay + Gray's test
+```
 
-BetaDanish currently focuses primarily on complete and right-censored survival data. 
-Users should check convergence, compare alternative models, and inspect diagnostic plots before drawing final conclusions. 
-Covariate modeling is available through dedicated advanced functions such as `fit_bd_aft()`.
+## Theoretical properties
+
+```r
+bd_moments(a = 1.5, b = 2.5, c = 2, k = 1)
+bd_entropy_shannon(1.5, 2.5, 2, 1)
+bd_mrl(c(0.5, 1, 2), 1.5, 2.5, 2, 1)
+bd_stress_strength(c(1.5, 2.5, 2, 1), c(1.5, 2.5, 2, 0.5))
+bd_hazard_shape(a = 0.5, b = 4, c = 1.2, k = 1)$shape   # "bathtub"
+```
+
+## Citation
+
+Ahmad, B., & Danish, M. Y. (2025). The Beta-Danish distribution for lifetime data analysis. *Journal of Applied Mathematics, Statistics and Informatics*, 21(1). <https://doi.org/10.2478/jamsi-2025-0010>
+
+```r
+citation("BetaDanish")
+```
 
 ## License
 
-This package is released under the GPL-3 License.
+GPL-3

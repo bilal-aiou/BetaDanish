@@ -1,0 +1,99 @@
+---
+title: "Cure Models with the Beta-Danish Distribution"
+author: "Bilal Ahmad"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cure Models with the Beta-Danish Distribution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## 1. Two cure formulations
+
+When a non-trivial fraction of subjects never experience the event,
+standard parametric survival models are misspecified. The package
+implements two complementary cure formulations on the Exponentiated
+Danish kernel:
+
+- The **mixture** cure model splits the population into a susceptible
+  fraction \(\pi(Z)\) (modelled by logistic regression on incidence
+  covariates) and a cured fraction \(1 - \pi(Z)\).
+- The **promotion-time** (non-mixture) cure model derives the cure
+  fraction from a latent Poisson process of clonogenic cells with
+  intensity \(\theta(Z) = \exp(Z' \gamma)\); the cure fraction is
+  \(\exp(-\theta(Z))\).
+
+Both are fitted by `fit_bd_cure(type = "mixture")` and
+`type = "promotion"`, sharing the same AFT latency component
+\(k_i = \exp(X_i' \delta)\).
+
+## 2. Bone marrow transplant data
+
+```{r}
+library(BetaDanish)
+data("transplant")
+str(transplant)
+```
+
+The `transplant` dataset contains 91 patients with a treatment group
+indicator and a known cure plateau in the Kaplan-Meier estimator.
+
+## 3. Promotion-time cure model
+
+```{r}
+fit_prom <- fit_bd_cure(
+  formula_aft  = survival::Surv(time, status) ~ 1,
+  formula_cure = ~ group,
+  data         = transplant,
+  type         = "promotion",
+  n_starts     = 3
+)
+summary(fit_prom)
+```
+
+## 4. Mixture cure model
+
+```{r}
+fit_mix <- fit_bd_cure(
+  formula_aft  = survival::Surv(time, status) ~ 1,
+  formula_cure = ~ group,
+  data         = transplant,
+  type         = "mixture",
+  n_starts     = 3
+)
+summary(fit_mix)
+```
+
+## 5. Model comparison
+
+```{r}
+data.frame(
+  Model  = c("Promotion-time", "Mixture"),
+  logLik = c(fit_prom$logLik, fit_mix$logLik),
+  AIC    = c(fit_prom$AIC,    fit_mix$AIC),
+  BIC    = c(fit_prom$BIC,    fit_mix$BIC)
+)
+```
+
+## 6. Cox-Snell residual diagnostic
+
+```{r}
+plot(fit_mix)
+```
+
+A diagonal-aligned plot indicates the cure-model specification is
+adequate; substantial departure from \(y = x\) suggests the latency
+distribution or the link function for the cure component need
+revisiting.
