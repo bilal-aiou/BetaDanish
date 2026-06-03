@@ -19,17 +19,6 @@ Invisibly returns \code{x}.
 }
 \description{
 Diagnostic Cox-Snell residual plot for a fitted AFT or cure model.
-The Cox-Snell residual \eqn{r_i = -\log \hat S(t_i \mid x_i)} should,
-under correct specification, behave as a censored sample from a
-unit-rate exponential; the plot overlays the Kaplan-Meier cumulative
-hazard of \eqn{r_i} on the y = x reference line.
-}
-\details{
-For AFT fits the per-observation scale is \eqn{k_i = \exp(X_i' \delta)},
-yielding the conditional survival used in the residual. For cure
-models only the latency component is used; this gives a residual on the
-subset of failures conditional on susceptibility, the standard cure-
-model diagnostic.
 }
 \examples{
 \donttest{

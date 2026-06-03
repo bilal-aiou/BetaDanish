@@ -11,12 +11,6 @@
 #' @return Scalar Shannon entropy (in nats); \code{NA_real_} on integration
 #'   failure.
 #'
-#' @details
-#' The integrand is computed as \eqn{f(t)\cdot \log f(t)} using the
-#' numerically stable log-pdf already implemented by \code{dbetadanish}.
-#' Quadrature uses adaptive Gauss-Kronrod via \code{stats::integrate};
-#' \code{NA_real_} is returned on integration failure.
-#'
 #' @examples
 #' bd_entropy_shannon(a = 1.5, b = 2.5, c = 2, k = 1)
 #'

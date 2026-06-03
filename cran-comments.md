@@ -8,9 +8,6 @@
 
 0 errors | 0 warnings | 0-1 notes
 
-All notes (if any) relate to the resubmission status or new-maintainer
-declaration, which we have addressed.
-
 ## Reverse dependencies
 
 There are no reverse dependencies for this package.

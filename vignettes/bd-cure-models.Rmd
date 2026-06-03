@@ -22,22 +22,9 @@ knitr::opts_chunk$set(
 
 ## 1. Two cure formulations
 
-When a non-trivial fraction of subjects never experience the event,
-standard parametric survival models are misspecified. The package
-implements two complementary cure formulations on the Exponentiated
-Danish kernel:
-
-- The **mixture** cure model splits the population into a susceptible
-  fraction \(\pi(Z)\) (modelled by logistic regression on incidence
-  covariates) and a cured fraction \(1 - \pi(Z)\).
-- The **promotion-time** (non-mixture) cure model derives the cure
-  fraction from a latent Poisson process of clonogenic cells with
-  intensity \(\theta(Z) = \exp(Z' \gamma)\); the cure fraction is
-  \(\exp(-\theta(Z))\).
-
-Both are fitted by `fit_bd_cure(type = "mixture")` and
-`type = "promotion"`, sharing the same AFT latency component
-\(k_i = \exp(X_i' \delta)\).
+The package implements two cure formulations on the Exponentiated
+Danish kernel: the mixture cure model and the promotion-time
+(non-mixture) cure model.
 
 ## 2. Bone marrow transplant data
 
@@ -46,9 +33,6 @@ library(BetaDanish)
 data("transplant")
 str(transplant)
 ```
-
-The `transplant` dataset contains 91 patients with a treatment group
-indicator and a known cure plateau in the Kaplan-Meier estimator.
 
 ## 3. Promotion-time cure model
 
@@ -92,8 +76,3 @@ data.frame(
 ```{r}
 plot(fit_mix)
 ```
-
-A diagonal-aligned plot indicates the cure-model specification is
-adequate; substantial departure from \(y = x\) suggests the latency
-distribution or the link function for the cure component need
-revisiting.

@@ -22,13 +22,7 @@ Numeric vector (or its log).
 }
 \description{
 Evaluates the probability density function of the r-th order statistic
-from a sample of size n drawn from the Beta-Danish distribution:
-\eqn{f_{(r:n)}(t) = \frac{n!}{(r-1)!(n-r)!} F(t)^{r-1} [1-F(t)]^{n-r} f(t)}.
-}
-\details{
-All computations are performed in log space using
-\code{lbeta(r, n - r + 1)} for the normalising constant, so the result
-is stable for moderately large \code{n}.
+from a sample of size n drawn from the Beta-Danish distribution.
 }
 \examples{
 tgrid <- seq(0.01, 5, length.out = 50)

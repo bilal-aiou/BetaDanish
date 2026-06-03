@@ -27,13 +27,7 @@ knitr::opts_chunk$set(eval = have_mcmc)
 
 This vignette walks through Bayesian estimation of the three-parameter
 Exponentiated Danish (ED) submodel and the full four-parameter
-Beta-Danish distribution using `bayes_betadanish()`. The sampler is a
-random-walk Metropolis run on log-transformed parameters with vague
-Gamma(0.01, 0.01) priors, and results are returned on the natural
-scale.
-
-`MCMCpack` and `coda` are Suggests rather than hard dependencies; this
-vignette is evaluated only when both are installed.
+Beta-Danish distribution using `bayes_betadanish()`.
 
 ## 2. ED submodel on bladder cancer remission times
 
@@ -57,9 +51,6 @@ print(fit_bayes)
 draws <- fit_bayes$draws
 op <- par(mfrow = c(3, 1), mar = c(3, 4, 2, 1))
 coda::traceplot(draws)
-par(op)
-op <- par(mfrow = c(3, 1), mar = c(3, 4, 2, 1))
-coda::autocorr.plot(draws, auto.layout = FALSE)
 par(op)
 ```
 
@@ -92,8 +83,3 @@ cbind(
   Bayes_post_mean = round(post_mean, 4)
 )
 ```
-
-The posterior means and MLE point estimates are typically very close
-for this dataset, with the Bayesian credible intervals offering a more
-honest accounting of estimation uncertainty than asymptotic Wald
-intervals.
