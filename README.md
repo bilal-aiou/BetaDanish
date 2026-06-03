@@ -51,15 +51,36 @@ install.packages(c("MCMCpack", "coda", "cmprsk", "flexsurv", "MASS"))
 
 ## The Beta-Danish Distribution
 
-### Density function
+### Construction
 
-For $t > 0$, the Beta-Danish pdf is
+The Beta-Danish distribution is obtained by applying the
+beta-generated family of Eugene, Lee, and Famoye (2002) to the
+**Danish baseline**, whose cumulative distribution function and
+density are
 
-$$f(t \mid a, b, c, k) = \frac{1}{B(a,b)}\, k\, c\, t^{c-1} \left[1 - \exp(-k\, t^{c})\right]^{ac - 1} \exp(-k\, b\, t^{c}),$$
+$$G(z; c, k) = \left(\frac{kz}{1+kz}\right)^c, \qquad g(z; c, k) = ck\,(kz)^{c-1}(1+kz)^{-(c+1)}, \qquad z > 0,$$
 
-with positive parameters $a, b, c, k > 0$. The case $a = 1$ yields
-the three-parameter Exponentiated Danish (ED) submodel used
-throughout the case studies.
+with shape parameter $c > 0$ and scale parameter $k > 0$.
+
+### Cumulative distribution function
+
+For a random variable $Z \sim \text{BetaDanish}(a, b, c, k)$ with
+$a, b, c, k > 0$, the CDF is the regularised incomplete beta
+function evaluated at the Danish CDF:
+
+$$F_Z(z; a, b, c, k) = I_{G(z; c, k)}(a, b) = I_{(kz/(1+kz))^c}(a, b), \qquad z > 0,$$
+
+where $I_x(a, b) = B_x(a, b) / B(a, b)$ and $B(a, b)$ is the beta
+function.
+
+### Probability density function
+
+Differentiating the CDF yields the density
+
+$$f_Z(z; a, b, c, k) = \frac{ck}{B(a, b)} \cdot \frac{(kz)^{ca - 1}}{(1 + kz)^{ca + 1}} \cdot \left[1 - \left(\frac{kz}{1 + kz}\right)^c\right]^{b - 1}, \qquad z > 0.$$
+
+The case $a = 1$ yields the three-parameter **Exponentiated Danish
+(ED) submodel** used throughout the case studies.
 
 ### Survival, hazard, and CDF
 
@@ -208,6 +229,17 @@ A BibTeX entry is available via:
 ```r
 citation("BetaDanish")
 ```
+
+## References
+
+Ahmad, B., & Danish, M. Y. (2025). The Beta-Danish distribution for
+lifetime data analysis. *Journal of Applied Mathematics, Statistics
+and Informatics*, 21(1).
+<https://doi.org/10.2478/jamsi-2025-0010>
+
+Eugene, N., Lee, C., & Famoye, F. (2002). Beta-normal distribution
+and its applications. *Communications in Statistics — Theory and
+Methods*, 31(4), 497–512.
 
 ## Getting Help
 
