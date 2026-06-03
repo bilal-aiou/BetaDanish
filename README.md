@@ -53,15 +53,12 @@ install.packages(c("MCMCpack", "coda", "cmprsk", "flexsurv", "MASS"))
 
 ### Density function
 
-For \eqn{t > 0}, the Beta-Danish pdf is
+For $t > 0$, the Beta-Danish pdf is
 
-\deqn{f(t \mid a, b, c, k) =
-  \frac{1}{B(a,b)}\, k\, c\, t^{c-1}
-  \bigl[1 - \exp(-k\, t^{c})\bigr]^{ac - 1}
-  \exp(-k\, b\, t^{c}),}
+$$f(t \mid a, b, c, k) = \frac{1}{B(a,b)}\, k\, c\, t^{c-1} \left[1 - \exp(-k\, t^{c})\right]^{ac - 1} \exp(-k\, b\, t^{c}),$$
 
-with positive parameters \eqn{a, b, c, k > 0}. The case \eqn{a = 1}
-yields the three-parameter Exponentiated Danish (ED) submodel used
+with positive parameters $a, b, c, k > 0$. The case $a = 1$ yields
+the three-parameter Exponentiated Danish (ED) submodel used
 throughout the case studies.
 
 ### Survival, hazard, and CDF
