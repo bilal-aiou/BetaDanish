@@ -17,6 +17,18 @@
 #'
 #' @details Requires \pkg{cmprsk} (Suggests).
 #'
+#' @examples
+#' \dontrun{
+#' set.seed(1)
+#' T1 <- rbetadanish(200, 1.2, 1.5, 1.0, 0.4)
+#' T2 <- rbetadanish(200, 1.0, 2.0, 1.0, 0.2)
+#' C  <- stats::rexp(200, 0.05)
+#' time  <- pmin(T1, T2, C)
+#' cause <- ifelse(time == C, 0L, ifelse(T1 <= T2, 1L, 2L))
+#' fit <- fit_bd_competing(time = time, cause = cause)
+#' cif_compare(fit)   # requires cmprsk to be installed
+#' }
+#'
 #' @export
 cif_compare <- function(fit, tmax = NULL, n_grid = 160, plot = TRUE) {
   if (!inherits(fit, "bd_competing"))
@@ -53,16 +65,14 @@ cif_compare <- function(fit, tmax = NULL, n_grid = 160, plot = TRUE) {
     m <- length(fit$causes)
     op <- graphics::par(no.readonly = TRUE)
     on.exit(graphics::par(op))
-    graphics::par(mfrow = c(1, m),
-                  mar = c(4.5, 4.5, 3, 1))
+    graphics::par(mfrow = c(1, m), mar = c(4.5, 4.5, 3, 1))
     for (j_idx in seq_along(fit$causes)) {
       j <- fit$causes[j_idx]
       fit_sub <- cif_fit_df[cif_fit_df$cause == paste0("Cause_", j), ]
       aj_sub  <- cif_aj_df[cif_aj_df$cause == paste0("Cause_", j), ]
       graphics::plot(fit_sub$time, fit_sub$cif, type = "l", lwd = 2,
                      col = "red", xlim = c(0, tmax), ylim = c(0, 1),
-                     xlab = "Time",
-                     ylab = paste0("CIF, cause ", j),
+                     xlab = "Time", ylab = paste0("CIF, cause ", j),
                      main = paste0("Cause ", j))
       graphics::lines(aj_sub$time, aj_sub$cif, type = "s",
                       lwd = 2, lty = 2, col = "black")

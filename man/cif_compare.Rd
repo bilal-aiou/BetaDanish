@@ -30,3 +30,16 @@ common grid, and Gray's CIF-equality test where applicable.
 \details{
 Requires \pkg{cmprsk} (Suggests).
 }
+\examples{
+\dontrun{
+set.seed(1)
+T1 <- rbetadanish(200, 1.2, 1.5, 1.0, 0.4)
+T2 <- rbetadanish(200, 1.0, 2.0, 1.0, 0.2)
+C  <- stats::rexp(200, 0.05)
+time  <- pmin(T1, T2, C)
+cause <- ifelse(time == C, 0L, ifelse(T1 <= T2, 1L, 2L))
+fit <- fit_bd_competing(time = time, cause = cause)
+cif_compare(fit)   # requires cmprsk to be installed
+}
+
+}
