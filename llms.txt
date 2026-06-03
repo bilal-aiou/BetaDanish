@@ -1,0 +1,180 @@
+# BetaDanish: The Beta-Danish Distribution for Lifetime Data Analysis
+
+The **BetaDanish** R package provides a comprehensive suite of tools for
+survival and reliability analysis using the four-parameter Beta-Danish
+distribution and its three-parameter Exponentiated Danish (ED) submodel.
+
+## Features (v0.2.0)
+
+- **Core distribution**: numerically stable d/p/q/r/h/s/logS for the
+  Beta-Danish and the Danish baseline.
+- **MLE inference**: complete and right-censored data with delta-method
+  standard errors and multi-start optimization.
+- **Bayesian inference**:
+  [`bayes_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/bayes_betadanish.md)
+  random-walk Metropolis sampler (requires `MCMCpack`).
+- **AFT regression** and **mixture / promotion-time cure models**.
+- **Competing risks**: bound-constrained multi-start L-BFGS-B with
+  Aalen-Johansen overlay and Gray’s test
+  ([`cif_compare()`](https://bilal-aiou.github.io/BetaDanish/reference/cif_compare.md)).
+- **Structural properties**: moments with existence checks,
+  probability-weighted moments, mean residual life, Shannon entropy,
+  order statistics, stress-strength reliability, and a hazard-shape
+  classifier.
+- **Diagnostics**: survival, hazard, density, P-P, Q-Q, and Cox-Snell
+  residual plots.
+- **Tooling**: bootstrap confidence intervals and a finite-sample
+  simulation-study runner.
+
+## Installation
+
+``` r
+
+# install.packages("devtools")
+devtools::install_github("bilal-aiou/BetaDanish")
+install.packages(c("MCMCpack", "coda", "cmprsk", "flexsurv", "MASS"))
+```
+
+## Quick Start
+
+``` r
+
+library(BetaDanish)
+data("remission")
+fit <- fit_betadanish(survival::Surv(time, status) ~ 1, data = remission)
+summary(fit)
+plot(fit, type = "all")
+```
+
+## Citation
+
+Ahmad, B., & Danish, M. Y. (2025). The Beta-Danish distribution for
+lifetime data analysis. *Journal of Applied Mathematics, Statistics and
+Informatics*, 21(1). <https://doi.org/10.2478/jamsi-2025-0010>
+
+## License
+
+GPL-3
+
+# Package index
+
+## Distribution functions
+
+Core d/p/q/r/h functions for the Beta-Danish distribution
+
+- [`dbetadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/BetaDanish.md)
+  [`pbetadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/BetaDanish.md)
+  [`qbetadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/BetaDanish.md)
+  [`rbetadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/BetaDanish.md)
+  [`hbetadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/BetaDanish.md)
+  : The Beta-Danish Distribution
+
+## Maximum likelihood estimation
+
+- [`fit_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_betadanish.md)
+  : Fit the Beta-Danish Distribution to Survival Data
+- [`gof_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/gof_betadanish.md)
+  : Goodness-of-Fit Statistics for Beta-Danish Models
+- [`compare_models()`](https://bilal-aiou.github.io/BetaDanish/reference/compare_models.md)
+  : Compare Nested Beta-Danish Models
+- [`compare_distributions()`](https://bilal-aiou.github.io/BetaDanish/reference/compare_distributions.md)
+  : Compare Beta-Danish with Standard Distributions
+
+## Bayesian estimation
+
+- [`bayes_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/bayes_betadanish.md)
+  : Bayesian Estimation for the Beta-Danish Distribution
+
+## AFT regression
+
+- [`fit_bd_aft()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_bd_aft.md)
+  : Fit Beta-Danish AFT Regression Model
+
+## Cure models
+
+- [`fit_bd_cure()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_bd_cure.md)
+  : Fit Beta-Danish Cure Models
+- [`simulate_bd_cure_data()`](https://bilal-aiou.github.io/BetaDanish/reference/simulate_bd_cure_data.md)
+  : Simulate Beta-Danish Cure Data
+
+## Competing risks
+
+- [`fit_bd_competing()`](https://bilal-aiou.github.io/BetaDanish/reference/fit_bd_competing.md)
+  : Fit Beta-Danish Competing Risks Model
+- [`cif_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/cif_betadanish.md)
+  : Compute Cumulative Incidence Function (CIF)
+- [`cif_compare()`](https://bilal-aiou.github.io/BetaDanish/reference/cif_compare.md)
+  : Compare Model-Based CIF to the Aalen-Johansen Estimator
+
+## Structural properties
+
+- [`bd_entropy_shannon()`](https://bilal-aiou.github.io/BetaDanish/reference/bd_entropy_shannon.md)
+  : Shannon Entropy of the Beta-Danish Distribution
+- [`bd_order_stat_pdf()`](https://bilal-aiou.github.io/BetaDanish/reference/bd_order_stat_pdf.md)
+  : Density of the r-th Order Statistic
+
+## Diagnostics and plots
+
+- [`plot(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/plot.betadanish.md)
+  : Plot Diagnostics for Beta-Danish Fit
+- [`plot(`*`<bd_aft>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/plot.bd_aft.md)
+  [`plot(`*`<bd_cure>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/plot.bd_aft.md)
+  : Cox-Snell Residual Plot for AFT and Cure Fits
+
+## S3 methods
+
+- [`summary(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/summary.betadanish.md)
+  : Summary Method for Beta-Danish Fit
+- [`print(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/print.betadanish.md)
+  : Print Method for Beta-Danish Fit
+- [`print(`*`<summary.betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/print.summary.betadanish.md)
+  : Print Summary Method for Beta-Danish Fit
+- [`coef(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/coef.betadanish.md)
+  : Extract Coefficients
+- [`vcov(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/vcov.betadanish.md)
+  : Extract Variance-Covariance Matrix
+- [`logLik(`*`<betadanish>`*`)`](https://bilal-aiou.github.io/BetaDanish/reference/logLik.betadanish.md)
+  : Extract Log-Likelihood
+
+## Reports and pipelines
+
+- [`analyze_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/analyze_betadanish.md)
+  : Comprehensive Beta-Danish Analysis Pipeline
+- [`report_betadanish()`](https://bilal-aiou.github.io/BetaDanish/reference/report_betadanish.md)
+  : Create a compact report from a BetaDanish model fit
+- [`read_survival_data()`](https://bilal-aiou.github.io/BetaDanish/reference/read_survival_data.md)
+  : Read and Prepare Survival Data
+- [`simulate_bd_data()`](https://bilal-aiou.github.io/BetaDanish/reference/simulate_bd_data.md)
+  : Simulate Data from the Beta-Danish Distribution
+
+## Datasets
+
+- [`remission`](https://bilal-aiou.github.io/BetaDanish/reference/remission.md)
+  : Bladder Cancer Remission Times
+- [`carbon_fibres`](https://bilal-aiou.github.io/BetaDanish/reference/carbon_fibres.md)
+  : Breaking Stress of Carbon Fibres
+- [`transplant`](https://bilal-aiou.github.io/BetaDanish/reference/transplant.md)
+  : Bone Marrow Transplant Survival
+- [`aarset`](https://bilal-aiou.github.io/BetaDanish/reference/aarset.md)
+  : Aarset Device Failure Times
+- [`leukemia`](https://bilal-aiou.github.io/BetaDanish/reference/leukemia.md)
+  : Acute Myelogenous Leukemia Survival
+- [`melanoma`](https://bilal-aiou.github.io/BetaDanish/reference/melanoma.md)
+  : Malignant Melanoma Survival After Surgery
+- [`brain_cancer`](https://bilal-aiou.github.io/BetaDanish/reference/brain_cancer.md)
+  : Brain Cancer Survival Data
+
+# Articles
+
+### User guides
+
+- [Introduction to the BetaDanish
+  Package](https://bilal-aiou.github.io/BetaDanish/articles/BetaDanish_Introduction.md):
+- [A Case Study Using the Beta-Danish
+  Distribution](https://bilal-aiou.github.io/BetaDanish/articles/betadanish-case-study.md):
+- [Bayesian Estimation with
+  BetaDanish](https://bilal-aiou.github.io/BetaDanish/articles/bd-bayesian.md):
+- [Competing Risks with the Beta-Danish
+  Distribution](https://bilal-aiou.github.io/BetaDanish/articles/bd-competing-risks.md):
+- [Cure Models with the Beta-Danish
+  Distribution](https://bilal-aiou.github.io/BetaDanish/articles/bd-cure-models.md):
