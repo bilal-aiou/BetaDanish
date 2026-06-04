@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bilal-aiou/BetaDanish/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/bilal-aiou/BetaDanish/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/bilal-aiou/BetaDanish/actions/workflows/pkgdown.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/BetaDanish)](https://CRAN.R-project.org/package=BetaDanish)
 [![License: GPL-3](https://img.shields.io/badge/License-GPL--3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
