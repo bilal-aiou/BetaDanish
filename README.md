@@ -218,18 +218,33 @@ browseVignettes("BetaDanish")
 
 ## Citation
 
-If you use BetaDanish in published work, please cite:
+If you use BetaDanish in published work, please cite the underlying
+article. The package implements the three-parameter Exponentiated
+Danish (ED) submodel introduced in the published article, as well as
+the four-parameter Beta-Danish distribution developed in the
+accompanying doctoral thesis.
 
-> Ahmad, B., & Danish, M. Y. (2025). The Beta-Danish distribution
-> for lifetime data analysis. *Journal of Applied Mathematics,
-> Statistics and Informatics*, 21(1).
+**Article (introduces the three-parameter ED submodel):**
+
+> Ahmad, B., & Danish, M. Y. (2025). Development and characterization
+> of a flexible three-parameter lifetime distribution: theoretical
+> properties and real-world applications.
+> *Journal of Applied Mathematics, Statistics and Informatics*, 21(1).
 > <https://doi.org/10.2478/jamsi-2025-0010>
+
+**Thesis (introduces the four-parameter Beta-Danish extension):**
+
+> Ahmad, B. (2026). *Modeling Diverse Survival Patterns: The
+> Development and Characterization of a New Four-Parameter Lifetime
+> Distribution* (Ph.D. thesis). Allama Iqbal Open University,
+> Islamabad, Pakistan. Supervised by Dr. Muhammad Yameen Danish.
 
 A BibTeX entry is available via:
 
 ```r
 citation("BetaDanish")
 ```
+
 
 ## References
 
