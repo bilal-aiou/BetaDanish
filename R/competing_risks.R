@@ -18,6 +18,31 @@
 #' cause (treating other causes as censored) to find robust starting values,
 #' then optimizes the joint likelihood.
 #'
+#' @section Identifiability of the cause-specific marginals:
+#' Mutual independence of the latent failure times is an *identifying*
+#' assumption, not an empirically testable property. Tsiatis (1975)
+#' showed that without it infinitely many joint distributions for
+#' \eqn{(T_1, \ldots, T_m)} generate the same observable law of
+#' \eqn{(T, \delta)}, so the marginals cannot be recovered from the
+#' observed data alone without further structure such as a copula or a
+#' shared frailty.
+#'
+#' The direction of the resulting bias is known qualitatively. Under
+#' positive latent dependence the working independence model overstates
+#' each cause-specific survival at moderate times, so the fitted
+#' cumulative incidence functions are biased downward; negative
+#' dependence reverses both. The overall survival
+#' \eqn{S(t) = \prod_j S_j(t)} is more robust than the individual
+#' marginals, because cause-attribution error partly cancels across
+#' causes. Where substantive conclusions rest on the absolute
+#' cause-specific CIFs rather than on model selection, supplement this
+#' fit with a copula-based sensitivity analysis.
+#'
+#' @references
+#' Tsiatis, A. (1975). A nonidentifiability aspect of the problem of
+#' competing risks. *Proceedings of the National Academy of Sciences*,
+#' 72(1), 20-22. \doi{10.1073/pnas.72.1.20}
+#'
 #' @export
 fit_bd_competing <- function(time, cause, n_starts = 5, method = "BFGS") {
 

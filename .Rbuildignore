@@ -19,3 +19,7 @@
 ^Meta$
 ^CRAN-SUBMISSION$
 ^dev$
+^\.betadanish_backup$
+^BetaDanish_Manual\.docx$
+^BetaDanish_Manual\.pdf$
+^data-raw$

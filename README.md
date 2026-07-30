@@ -142,10 +142,12 @@ See the **Bayesian Estimation** vignette for full details.
 ### AFT regression
 
 ```r
-data("brain_cancer")
+data("melanoma")
+melanoma$event <- ifelse(melanoma$status == 1, 1, 0)
+
 fit_aft <- fit_bd_aft(
-  survival::Surv(Survtime, Survstatus) ~ Age + Grade + Surgery,
-  data = brain_cancer
+  survival::Surv(time, event) ~ age + thickness,
+  data = melanoma
 )
 summary(fit_aft)
 plot(fit_aft)   # Cox-Snell residual diagnostic
@@ -185,17 +187,54 @@ reported for cause equality.
 | `bd_entropy_shannon()` | Shannon (differential) entropy |
 | `bd_order_stat_pdf()` | r-th order statistic density |
 
+## Working from a CSV File
+
+The whole workflow can be driven from a spreadsheet, with no modelling
+code. Two columns are enough: `time` and `status` (1 = event,
+0 = censored).
+
+```r
+# Not sure of the layout? Write a template and fill it in.
+bd_csv_template("my_data.csv", type = "covariate")
+
+# Read a file; time and status are guessed from common column names.
+dat <- read_survival_data("my_data.csv", covar_cols = "all")
+attr(dat, "bd_data_report")   # what was read, dropped, and inferred
+
+# Or run the whole analysis in one call.
+res <- bd_analyze_csv(
+  "my_data.csv",
+  analysis   = "univariate",   # or "aft", "cure", "competing"
+  model      = "both",         # Beta-Danish and the ED submodel
+  output_dir = "results"       # tables as CSV, figures as PNG
+)
+
+res                       # headline summary
+res$tables$estimates      # tidy parameter table
+res$failures              # empty if everything succeeded
+```
+
+Nothing is written to disk unless `output_dir` is supplied. Each model is
+fitted independently, so one failure is recorded rather than losing the
+whole run.
+
+| Function | Purpose |
+|---|---|
+| `bd_analyze_csv()` | Read, fit, tabulate and optionally save |
+| `read_survival_data()` | Read and validate a file into a data frame |
+| `bd_csv_template()` | Write a correctly shaped skeleton CSV |
+
 ## Built-in Datasets
 
 | Dataset | n | Description |
 |---|---|---|
 | `remission` | 128 | Bladder cancer remission times |
-| `carbon_fibres` | 100 | Breaking stress of carbon fibres (Gba) |
+| `carbon_fibres` | 100 | Breaking stress of carbon fibres (GPa) |
 | `transplant` | 91 | Bone marrow transplant survival |
 | `aarset` | 50 | Aarset device failure times (bathtub hazard) |
 | `leukemia` | 23 | Acute myelogenous leukemia survival |
 | `melanoma` | 205 | Malignant melanoma post-surgery |
-| `brain_cancer` | varies | Brain cancer survival with comorbidities |
+| `guinea_pig` | 72 | Guinea pig survival, virulent tubercle bacilli (days) |
 
 ## Vignettes
 

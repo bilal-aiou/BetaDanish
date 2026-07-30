@@ -1,7 +1,7 @@
 Package: BetaDanish
 Type: Package
 Title: The Beta-Danish Distribution for Lifetime Data Analysis
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: c(
     person("Bilal", "Ahmad", email = "bilalahmad.imcbh9@gmail.com",
            role = c("aut", "cre")),
@@ -22,7 +22,7 @@ BugReports: https://github.com/bilal-aiou/BetaDanish/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports:
+Imports: grDevices, 
     maxLik,
     survival,
     stats,

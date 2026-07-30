@@ -1743,9 +1743,9 @@ if (!isTRUE(.res))
 
 .step("Confirming sbetadanish is exported")
 .ns <- readLines("NAMESPACE", warn = FALSE)
-if (!any(grepl("export(sbetadanish)", .ns, fixed = TRUE)))
+if (!any(grepl("export(sbetadanish)", .ns, fixed = TRUE))) {
   .warn("sbetadanish is not in NAMESPACE; check the roxygen block in R/dist_functions.R")
-else .ok("export(sbetadanish) present")
+} else .ok("export(sbetadanish) present")
 
 .step("devtools::check() -- this takes a few minutes")
 .chk <- tryCatch(

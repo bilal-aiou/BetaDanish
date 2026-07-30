@@ -1,0 +1,46 @@
+Package: BetaDanish
+Type: Package
+Title: The Beta-Danish Distribution for Lifetime Data Analysis
+Version: 0.2.0.9000
+Authors@R: c(
+    person("Bilal", "Ahmad", email = "bilalahmad.imcbh9@gmail.com",
+           role = c("aut", "cre")),
+    person("Muhammad Yameen", "Danish", email = "yameen.danish@aiou.edu.pk", 
+           role = "aut")
+    )
+Description: Implements the four-parameter Beta-Danish distribution and its
+    three-parameter submodel for survival and reliability analysis, based on
+    Ahmad and Danish (2025) <doi:10.2478/jamsi-2025-0010>. Provides functions
+    for density, distribution, quantile, hazard, and random generation.
+    Includes maximum likelihood estimation for complete and right-censored
+    data, goodness-of-fit assessment, comparison with standard lifetime
+    distributions, and publication-quality visualizations. Advanced modules
+    support Accelerated Failure Time (AFT) regression, mixture and
+    promotion-time cure models, and competing risks analysis.
+URL: https://bilal-aiou.github.io/BetaDanish/, https://github.com/bilal-aiou/BetaDanish
+BugReports: https://github.com/bilal-aiou/BetaDanish/issues
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    maxLik,
+    survival,
+    stats,
+    graphics,
+    utils,
+    tools
+Suggests:
+    readxl,
+    flexsurv,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    cmprsk,
+    coda,
+    MCMCpack
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5)
+Config/roxygen2/version: 8.0.0
+Language: en-US
