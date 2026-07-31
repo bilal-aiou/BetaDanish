@@ -1,4 +1,95 @@
-# BetaDanish 0.2.0.9000 (development version)
+# BetaDanish 0.3.0
+
+## Estimation and inference
+
+* `fit_betadanish(grouped = TRUE)` uses the grouped likelihood for times
+  recorded on a coarse grid. An event at `t` contributes
+  `log{F(t + delta/2) - F(t - delta/2)}` rather than `log f(t)`. The
+  increment is inferred from the spacing of the times unless `delta` is
+  supplied, and a warning now fires when the times look grid-recorded
+  but the point-density likelihood is being used, which understates
+  every standard error.
+
+* `fit_betadanish(penalty = )` adds a ridge penalty on the
+  log-parameter scale for the weakly identified regime, shrinking
+  toward the unpenalised optimum unless `penalty_center` says
+  otherwise.
+
+  The reported `logLik` is the **unpenalised** log-likelihood evaluated
+  at the penalised estimate, so AIC, BIC and likelihood ratio tests
+  stay comparable with unpenalised fits. The objective actually
+  maximised is kept separately as `penalised_logLik`.
+
+* `bd_wald_ci()` builds Wald intervals on the log scale and
+  exponentiates, so they cannot cross zero. The symmetric interval on
+  the natural scale does exactly that for a weakly identified tail
+  index.
+
+* `bd_profile_ci()` inverts the likelihood ratio test for one
+  parameter. When the profile stays inside the critical region to the
+  top of the grid it returns `Inf` and says so: an unbounded interval
+  is a result, and the honest report is a lower bound rather than a
+  point estimate.
+
+* `bd_identified_coef()` reports the four-parameter fit as `(ac, b, k)`.
+  Near the lower tail `a` and `c` enter almost entirely through their
+  product, so the composite is estimated precisely while the two
+  separately are not. The log-likelihood is unchanged: this is a
+  reparametrisation, not a different model.
+
+## Theoretical properties
+
+* **Moments**: `bd_moments()`, `bd_moment_summary()`,
+  `bd_incomplete_moment()` and `bd_conditional_moment()`. Every integral
+  is taken on the finite Beta(a, b) scale under the substitution
+  `u = G(z)`, so there is no series truncation. The existence condition
+  `b > r` is enforced: a moment that does not exist returns `Inf` rather
+  than a large finite number from a truncated sum.
+
+* **Ageing and inequality**: `bd_mrl()` and `bd_rmrl()` for mean residual
+  life and mean inactivity time, `bd_mean_deviation()`, `bd_lorenz()`,
+  `bd_bonferroni()` and `bd_pwm()`.
+
+* **Entropies**: `bd_entropy_shannon()` now uses the closed form, with
+  `method = "quadrature"` retained as an independent cross-check.
+  `bd_entropy_renyi()` and `bd_entropy_tsallis()` are new.
+
+  The quadrature `bd_entropy_shannon()` that shipped in 0.2.0 from
+  `R/entropy.R` is superseded by the closed form and that file is
+  removed. The signature changes from
+  `(a, b, c, k, subdivisions, rel.tol)` to
+  `(a, b, c, k, terms, method, rel.tol, subdivisions)`. Named calls are
+  unaffected; a positional call passing `subdivisions` fifth would now
+  set `terms`. The old behaviour is available as
+  `method = "quadrature"`.
+
+  The closed form's series terms decay like `i^-(b+1)`, so plain
+  truncation is accurate for large `b` and not for small `b`. Against
+  high-precision integration the untruncated-tail sum at `M = 2000` is
+  out by about `1e-8` at `b = 3` but by about `0.11` at `b = 0.5`. An
+  analytic Euler-Maclaurin tail is now added, restoring agreement to
+  roughly eight digits throughout.
+
+* **Reliability**: `bd_stress_strength()` for `R = P(X > Y)` with `X` the
+  strength, evaluated on the Beta scale of the stress variable.
+
+* **Shape**: `bd_hazard_shape()` classifies the hazard as increasing,
+  decreasing, bathtub or upside-down bathtub using Glaser's
+  `eta(t) = -f'(t)/f(t)`, formed analytically, and reports the mode.
+
+* **Order statistics**: `bd_order_stat_cdf()` and
+  `bd_order_stat_moments()`, alongside the existing
+  `bd_order_stat_pdf()`.
+
+* **Tail behaviour**: `bd_tail_index()` records that the survival
+  function is regularly varying with index `-b`, that `E(Z^r)` is finite
+  exactly when `b > r`, that the moment generating function does not
+  exist, and that the distribution lies in the Frechet domain of
+  attraction.
+
+* **Exponentiated Danish API**: `ded()`, `ped()`, `qed()`, `red()`,
+  `sed()` and `hed()` name the `a = 1` submodel directly instead of
+  requiring `dbetadanish(x, 1, b, c, k)`.
 
 ## Datasets
 

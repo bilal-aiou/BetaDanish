@@ -10,7 +10,11 @@ fit_betadanish(
   submodel = FALSE,
   n_starts = 10,
   method = "BFGS",
-  check_identifiability = TRUE
+  check_identifiability = TRUE,
+  penalty = 0,
+  penalty_center = NULL,
+  grouped = FALSE,
+  delta = NULL
 )
 }
 \arguments{
@@ -29,6 +33,21 @@ multi-start optimisation. Default 10.}
 
 \item{check_identifiability}{Logical; if `TRUE` (default), issue warnings
 when the fit lands in a region where the parameters are weakly identified.}
+
+\item{penalty}{Non-negative ridge penalty applied on the log-parameter
+scale. `0` (default) is ordinary maximum likelihood. A small positive
+value stabilises the fit when the likelihood is nearly flat, at the cost
+of bias toward `penalty_center`.}
+
+\item{penalty_center}{Numeric vector on the log-parameter scale toward which
+the penalty shrinks, or `NULL` (default) to shrink toward the best
+unpenalised start.}
+
+\item{grouped}{Logical; if `TRUE`, use the grouped (interval) likelihood
+appropriate to times recorded on a coarse grid. Default `FALSE`.}
+
+\item{delta}{Recording increment for `grouped = TRUE`. `NULL` (default)
+infers it from the spacing of the observed times.}
 }
 \value{
 An object of S3 class `"betadanish"` with components including
@@ -44,6 +63,38 @@ Optimisation is carried out on log-transformed parameters so that positivity
 is enforced without constraints; estimates and the variance-covariance matrix
 are returned on the natural scale, the latter via the delta method.
 }
+\section{Grouped data}{
+
+Survival times are often recorded on a grid -- whole days, whole months --
+and the point-density likelihood is not appropriate for them. It treats a
+rounded value as an exact observation, which overstates the information in
+the sample and understates every standard error. With `grouped = TRUE` an
+event recorded at \eqn{t} contributes
+\eqn{\log\{F(t + \delta/2) - F(t - \delta/2)\}} instead of
+\eqn{\log f(t)}; censored observations are unchanged. The cell probability
+falls back to \eqn{f(t)\delta} only where the difference of two nearly
+equal distribution values has cancelled to zero.
+
+`read_survival_data()` reports an inferred `grid_step` for exactly this
+purpose, and this function warns when the times look grid-recorded but
+`grouped = FALSE`.
+}
+
+\section{Penalised fitting}{
+
+`penalty > 0` adds \eqn{\lambda \sum (\theta - \mu)^2} on the
+log-parameter scale. This is worth reaching for when the likelihood is flat
+along the \eqn{(a, c)} direction and the unpenalised optimiser wanders, but
+it is a deliberate bias: the estimates are shrunk toward `penalty_center`.
+
+The reported `logLik` is always the **unpenalised** log-likelihood evaluated
+at the penalised estimate, so that AIC, BIC and likelihood ratio tests
+remain comparable across fits. The objective actually maximised is stored
+separately as `penalised_logLik`. Treat the degrees of freedom as nominal:
+shrinkage reduces the effective number of parameters, so information
+criteria are conservative under penalisation.
+}
+
 \section{Identifiability}{
 
 The four-parameter model is not uniformly well identified, and a converged

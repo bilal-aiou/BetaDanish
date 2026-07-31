@@ -52,13 +52,13 @@ bibentry(
            role = "aut")
   ),
   year    = format(Sys.Date(), "%Y"),
-  note    = "R package version 0.2.0",
+  note    = paste("R package version", meta$Version),
   url     = "https://bilal-aiou.github.io/BetaDanish/",
   textVersion = paste(
     "Ahmad, B., & Danish, M. Y. (",
     format(Sys.Date(), "%Y"),
     "). BetaDanish: The Beta-Danish Distribution for Lifetime Data",
-    "Analysis. R package version 0.2.0.",
+    "Analysis. R package version ", meta$Version, ".",
     "https://bilal-aiou.github.io/BetaDanish/",
     sep = ""
   )

@@ -10,3 +10,5 @@ pkgdown/
 inst/doc/
 /doc/
 /Meta/
+.betadanish_backup/
+BetaDanish.Rcheck/

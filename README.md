@@ -11,28 +11,60 @@
 ## Overview
 
 The **BetaDanish** package implements the four-parameter Beta-Danish
-distribution and its three-parameter Exponentiated Danish (ED)
-submodel for survival, reliability, and lifetime-data analysis. The
-distribution was introduced by Ahmad and Danish (2025) and offers a
-flexible alternative to classical lifetime models such as the
-Weibull, gamma, and log-normal, while accommodating monotonic,
-unimodal, and bathtub-shaped hazards within a single parametric
-family.
+distribution and its three-parameter Exponentiated Danish (ED) submodel for
+survival, reliability and lifetime-data analysis. The distribution was
+introduced by Ahmad and Danish (2025) and accommodates monotonic, unimodal
+and bathtub-shaped hazards within a single parametric family.
 
-Beyond the core distribution, the package provides a comprehensive
-toolkit for modern survival modelling:
+Its upper tail is regularly varying with index `-b`, so the survival function
+decays polynomially rather than exponentially. That is what makes the family
+useful for heavy-tailed lifetime data, and it has two consequences the package
+takes seriously: `E(Z^r)` is finite only when `b > r`, and the moment
+generating function does not exist at all.
 
-- Maximum-likelihood and **Bayesian** inference for complete and
-  right-censored data
-- **Accelerated failure time (AFT)** regression
-- Mixture and **promotion-time cure** models
-- **Competing risks** analysis with Aalen-Johansen comparisons and
-  Gray's test
-- Closed-form moments, **Shannon entropy**, order statistics,
-  mean residual life, hazard-shape classification, and
-  stress-strength reliability
-- A complete diagnostic toolkit: survival, hazard, density, P-P, Q-Q
-  and **Cox-Snell residual** plots
+### Distribution functions
+
+`dbetadanish()`, `pbetadanish()`, `qbetadanish()`, `sbetadanish()`,
+`hbetadanish()` and `rbetadanish()`, with `ded()`, `ped()`, `qed()`, `sed()`,
+`hed()` and `red()` naming the ED submodel directly. All are evaluated so as
+to hold accuracy far into the tail: the quantile function uses the beta mirror
+identity rather than subtracting a near-one probability from one, and the
+survival function is never formed by cancellation.
+
+### Estimation and inference
+
+- Maximum likelihood for complete and right-censored samples
+- A **grouped likelihood** for times recorded on a coarse grid, where treating
+  a rounded value as exact would understate every standard error
+- **Ridge-penalized** fitting for the weakly identified regime
+- **Bayesian** sampling by random-walk Metropolis
+- Log-scale Wald and **profile-likelihood** intervals; an unbounded profile is
+  reported as such rather than truncated at the grid edge
+- `bd_identified_coef()` reports the fit through the identified composite
+  `ac`, which is what the data determine when `a` and `c` cannot be separated
+- Diagnostics that warn when a fit lands on the `b = 1` ridge, when the
+  information matrix is singular, or when starts were discarded as degenerate
+
+### Structural properties
+
+Raw, incomplete and conditional moments with their existence conditions;
+Shannon (closed form), Renyi and Tsallis entropies; mean residual life and
+mean inactivity time; mean deviations; Lorenz and Bonferroni curves;
+probability weighted moments; order-statistic densities, distributions and
+moments; stress-strength reliability; hazard-shape classification via
+Glaser's criterion; and the tail index.
+
+### Regression
+
+Accelerated failure time models, mixture and promotion-time cure models, and
+competing risks with Aalen-Johansen comparison and Gray's test, each with
+Cox-Snell residual diagnostics.
+
+### Working from a file
+
+`bd_analyze_csv()` takes a delimited file or spreadsheet through reading,
+fitting, tabulation and optional figure output in one call. See the
+"Analysing Your Own Data from a CSV File" vignette.
 
 ## Installation
 

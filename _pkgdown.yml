@@ -77,6 +77,37 @@ reference:
       - melanoma
       - brain_cancer
 
+  - title: Added in 0.3.0
+    contents:
+      - bd_analyze_csv
+      - bd_bonferroni
+      - bd_conditional_moment
+      - bd_csv_template
+      - bd_entropy_renyi
+      - bd_entropy_tsallis
+      - bd_hazard_shape
+      - bd_identified_coef
+      - bd_incomplete_moment
+      - bd_lorenz
+      - bd_mean_deviation
+      - bd_moment_summary
+      - bd_moments
+      - bd_mrl
+      - bd_order_stat_cdf
+      - bd_order_stat_moments
+      - bd_profile_ci
+      - bd_pwm
+      - bd_rmrl
+      - bd_stress_strength
+      - bd_tail_index
+      - bd_wald_ci
+      - ded
+      - hed
+      - ped
+      - qed
+      - red
+      - sbetadanish
+      - sed
 articles:
   - title: User guides
     navbar: ~

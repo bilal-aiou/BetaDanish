@@ -13,6 +13,17 @@
 #' @param method Character; optimisation method passed to `maxLik::maxLik`.
 #' @param check_identifiability Logical; if `TRUE` (default), issue warnings
 #'   when the fit lands in a region where the parameters are weakly identified.
+#' @param penalty Non-negative ridge penalty applied on the log-parameter
+#'   scale. `0` (default) is ordinary maximum likelihood. A small positive
+#'   value stabilises the fit when the likelihood is nearly flat, at the cost
+#'   of bias toward `penalty_center`.
+#' @param penalty_center Numeric vector on the log-parameter scale toward which
+#'   the penalty shrinks, or `NULL` (default) to shrink toward the best
+#'   unpenalised start.
+#' @param grouped Logical; if `TRUE`, use the grouped (interval) likelihood
+#'   appropriate to times recorded on a coarse grid. Default `FALSE`.
+#' @param delta Recording increment for `grouped = TRUE`. `NULL` (default)
+#'   infers it from the spacing of the observed times.
 #'
 #' @return An object of S3 class `"betadanish"` with components including
 #'   `coefficients`, `logLik`, `vcov`, `npar`, `nobs`, `convergence` and
@@ -22,6 +33,34 @@
 #' Optimisation is carried out on log-transformed parameters so that positivity
 #' is enforced without constraints; estimates and the variance-covariance matrix
 #' are returned on the natural scale, the latter via the delta method.
+#'
+#' @section Grouped data:
+#' Survival times are often recorded on a grid -- whole days, whole months --
+#' and the point-density likelihood is not appropriate for them. It treats a
+#' rounded value as an exact observation, which overstates the information in
+#' the sample and understates every standard error. With `grouped = TRUE` an
+#' event recorded at \eqn{t} contributes
+#' \eqn{\log\{F(t + \delta/2) - F(t - \delta/2)\}} instead of
+#' \eqn{\log f(t)}; censored observations are unchanged. The cell probability
+#' falls back to \eqn{f(t)\delta} only where the difference of two nearly
+#' equal distribution values has cancelled to zero.
+#'
+#' `read_survival_data()` reports an inferred `grid_step` for exactly this
+#' purpose, and this function warns when the times look grid-recorded but
+#' `grouped = FALSE`.
+#'
+#' @section Penalised fitting:
+#' `penalty > 0` adds \eqn{\lambda \sum (\theta - \mu)^2} on the
+#' log-parameter scale. This is worth reaching for when the likelihood is flat
+#' along the \eqn{(a, c)} direction and the unpenalised optimiser wanders, but
+#' it is a deliberate bias: the estimates are shrunk toward `penalty_center`.
+#'
+#' The reported `logLik` is always the **unpenalised** log-likelihood evaluated
+#' at the penalised estimate, so that AIC, BIC and likelihood ratio tests
+#' remain comparable across fits. The objective actually maximised is stored
+#' separately as `penalised_logLik`. Treat the degrees of freedom as nominal:
+#' shrinkage reduces the effective number of parameters, so information
+#' criteria are conservative under penalisation.
 #'
 #' @section Identifiability:
 #' The four-parameter model is not uniformly well identified, and a converged
@@ -62,25 +101,60 @@
 #' compare_models(fit, fit_sub)
 #' }
 fit_betadanish <- function(formula, data, submodel = FALSE, n_starts = 10,
-                           method = "BFGS", check_identifiability = TRUE) {
+                           method = "BFGS", check_identifiability = TRUE,
+                           penalty = 0, penalty_center = NULL,
+                           grouped = FALSE, delta = NULL) {
 
   surv_data <- extract_surv_data(formula, data)
   time   <- surv_data$time
   status <- surv_data$status
 
-  ll_fun <- function(pars) {
+  if (!is.numeric(penalty) || length(penalty) != 1L || is.na(penalty) || penalty < 0)
+    stop("'penalty' must be a single non-negative number.", call. = FALSE)
+
+  grid_step <- .bd_grid_step(time)
+  if (isTRUE(grouped)) {
+    if (is.null(delta)) delta <- grid_step
+    if (!is.finite(delta) || delta <= 0)
+      stop("grouped = TRUE needs a recording increment. The spacing of the ",
+           "times did not imply one, so supply 'delta' explicitly.",
+           call. = FALSE)
+  } else if (is.finite(grid_step) && isTRUE(check_identifiability)) {
+    warning(sprintf(paste0("The times look recorded on a grid of %s. The ",
+                           "point-density likelihood treats them as exact, ",
+                           "which understates the standard errors. Consider ",
+                           "grouped = TRUE."), format(grid_step)),
+            call. = FALSE)
+  }
+
+  ## Unpenalised log-likelihood, exact or grouped.
+  loglik_fun <- function(pars) {
     a_par <- if (submodel) 1.0 else exp(pars[["log_a"]])
     b_par <- exp(pars[["log_b"]])
     c_par <- exp(pars[["log_c"]])
     k_par <- exp(pars[["log_k"]])
 
-    lp <- suppressWarnings(
-      dbetadanish(time, a_par, b_par, c_par, k_par, log = TRUE))
+    lp <- if (isTRUE(grouped)) {
+      suppressWarnings(.bd_log_cell(time, delta, a_par, b_par, c_par, k_par))
+    } else {
+      suppressWarnings(dbetadanish(time, a_par, b_par, c_par, k_par, log = TRUE))
+    }
     ls <- suppressWarnings(
       pbetadanish(time, a_par, b_par, c_par, k_par,
                   lower.tail = FALSE, log.p = TRUE))
 
-    loglik <- sum(status * lp + (1 - status) * ls)
+    sum(status * lp + (1 - status) * ls)
+  }
+
+  pen_center <- penalty_center
+
+  ll_fun <- function(pars) {
+    loglik <- loglik_fun(pars)
+    if (!is.finite(loglik)) return(-1e10)
+    if (penalty > 0 && !is.null(pen_center)) {
+      mu <- pen_center[names(pars)]
+      if (!anyNA(mu)) loglik <- loglik - penalty * sum((pars - mu)^2)
+    }
     if (!is.finite(loglik)) return(-1e10)
     loglik
   }
@@ -101,6 +175,16 @@ fit_betadanish <- function(formula, data, submodel = FALSE, n_starts = 10,
   }
 
   accept <- .bd_make_accept(n = length(time))
+
+  ## With a penalty and no explicit centre, shrink toward the unpenalised
+  ## optimum rather than toward an arbitrary point.
+  if (penalty > 0 && is.null(pen_center)) {
+    pilot <- optim_multistart(function(p) {
+      v <- loglik_fun(p); if (is.finite(v)) v else -1e10
+    }, start_list, method = method, accept = accept)
+    if (!is.null(pilot)) pen_center <- pilot$estimate
+  }
+
   fit <- optim_multistart(ll_fun, start_list, method = method, accept = accept)
   if (is.null(fit))
     stop("No admissible optimum was found. Every start either failed or ",
@@ -122,15 +206,24 @@ fit_betadanish <- function(formula, data, submodel = FALSE, n_starts = 10,
   npar <- length(est_nat)
   nobs <- length(time)
 
+  ## The objective may be penalised; the reported log-likelihood never is, so
+  ## that AIC, BIC and likelihood ratio tests stay comparable across fits.
+  ll_unpen <- loglik_fun(est_log)
+  if (!is.finite(ll_unpen)) ll_unpen <- fit$maximum
+
   out <- list(
     coefficients = est_nat,
-    logLik       = fit$maximum,
+    logLik       = ll_unpen,
+    penalised_logLik = if (penalty > 0) fit$maximum else NA_real_,
+    penalty      = penalty,
+    grouped      = isTRUE(grouped),
+    delta        = if (isTRUE(grouped)) delta else NA_real_,
     vcov         = vcov_nat,
     npar         = npar,
     nobs         = nobs,
     nevent       = sum(status == 1),
-    AIC          = 2 * npar - 2 * fit$maximum,
-    BIC          = npar * log(nobs) - 2 * fit$maximum,
+    AIC          = 2 * npar - 2 * ll_unpen,
+    BIC          = npar * log(nobs) - 2 * ll_unpen,
     convergence  = fit$code,
     message      = fit$message,
     starts_ok        = .bd_or(attr(fit, "bd_starts_ok"), NA_integer_),
@@ -146,6 +239,27 @@ fit_betadanish <- function(formula, data, submodel = FALSE, n_starts = 10,
 
   if (isTRUE(check_identifiability)) .bd_warn_diagnostics(out$diagnostics)
 
+  out
+}
+
+#' Log Cell Probability for Grouped Times
+#'
+#' \eqn{\log\{F(t + \delta/2) - F(t - \delta/2)\}}, falling back to
+#' \eqn{\log f(t) + \log\delta} only where the difference of two nearly equal
+#' distribution values has cancelled to zero. Capped at `0`, since a
+#' probability cannot exceed one.
+#'
+#' @noRd
+.bd_log_cell <- function(t, delta, a, b, c, k) {
+  L  <- pmax(t - delta / 2, 0)
+  U  <- t + delta / 2
+  pc <- pbetadanish(U, a, b, c, k) - pbetadanish(L, a, b, c, k)
+
+  out <- numeric(length(t))
+  bad <- !is.finite(pc) | pc <= 0
+  if (any(!bad)) out[!bad] <- pmin(log(pc[!bad]), 0)
+  if (any(bad))
+    out[bad] <- pmin(dbetadanish(t[bad], a, b, c, k, log = TRUE) + log(delta), 0)
   out
 }
 
