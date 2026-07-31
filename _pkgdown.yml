@@ -108,6 +108,14 @@ reference:
       - red
       - sbetadanish
       - sed
+  - title: Added in 0.3.0
+    contents:
+      - bd_profile_plot
+      - bd_simulation_competing
+      - bd_simulation_cure
+      - bd_simulation_study
+      - bd_ttt_plot
+      - simulate_bd_competing_data
 articles:
   - title: User guides
     navbar: ~

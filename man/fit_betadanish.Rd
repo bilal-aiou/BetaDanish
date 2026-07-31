@@ -78,6 +78,14 @@ equal distribution values has cancelled to zero.
 `read_survival_data()` reports an inferred `grid_step` for exactly this
 purpose, and this function warns when the times look grid-recorded but
 `grouped = FALSE`.
+
+The grouped likelihood is a harder surface to optimise than the
+point-density one. On the same data and the same starting grid, the
+optimiser can stop where the observed information is not positive
+definite, and the delta-method variances then come back non-positive.
+Check `fit$diagnostics$vcov_singular` before trusting a standard error
+from a grouped fit; leaving `check_identifiability = TRUE` will warn
+about it automatically.
 }
 
 \section{Penalised fitting}{

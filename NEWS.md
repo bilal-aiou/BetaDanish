@@ -1,5 +1,47 @@
 # BetaDanish 0.3.0
 
+## Visualisation
+
+* `bd_ttt_plot()` draws the scaled total time on test transform, a
+  distribution-free read on hazard shape before any model is fitted. It
+  returns the plotting coordinates and a suggested shape label, so it can
+  be compared against `bd_hazard_shape()` from the fitted parameters.
+
+* `bd_profile_plot()` draws a profile log-likelihood with the critical
+  threshold and the resulting interval marked. Where the curve never
+  returns below the threshold the plot says there is no finite upper
+  bound, rather than implying one at the edge of the grid.
+
+* `plot()` method for `bd_bayes` objects, giving trace and posterior
+  density panels and restoring the graphical parameters on exit.
+
+* The introduction and competing-risks vignettes cover the new
+  functions.
+
+## Competing risks and simulation
+
+* `fit_bd_competing()` accepts covariates, either as a one-sided formula
+  with `data` or as a matrix. Each cause carries its own coefficient
+  vector acting on the time scale, `T_j = T_0j * exp(x'gamma_j)`, so a
+  covariate may accelerate one cause and retard another. The intercept
+  is dropped, since each cause already has its own scale parameter.
+
+* `fit_bd_competing(submodel = TRUE)` fits Exponentiated Danish
+  cause-specific kernels, and the fit now goes through the same
+  degeneracy guard as the univariate model.
+
+* `cif_betadanish()` gains an `x` argument for the covariate values at
+  which to evaluate the cumulative incidence, defaulting to the
+  reference subject. A covariate effect folds exactly into the scale
+  parameter, since scaling time by lambda maps `k` to `k/lambda`.
+
+* **Simulation studies**: `bd_simulation_study()` for the univariate
+  model, `bd_simulation_cure()` and `bd_simulation_competing()`,
+  alongside `simulate_bd_competing_data()`. Each reports bias, RMSE,
+  the ratio of mean estimated standard error to empirical standard
+  deviation, and Wald coverage. Replicates with no admissible optimum
+  are counted rather than dropped.
+
 ## Estimation and inference
 
 * `fit_betadanish(grouped = TRUE)` uses the grouped likelihood for times
