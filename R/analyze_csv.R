@@ -122,6 +122,9 @@
 #'   `analysis = "cure"`, for example `~ group`. Defaults to the retained
 #'   covariates.
 #' @param cure_type `"mixture"` (default) or `"promotion"`.
+#' @param competing_submodel Logical; for `analysis = "competing"`, use
+#'   the three-parameter Exponentiated Danish kernel for every cause. This
+#'   is more stable for small or weakly identified samples. Default `FALSE`.
 #' @param output_dir Directory to write results to. `NULL` (default) writes
 #'   nothing. The directory is created if it does not exist.
 #' @param n_starts Number of random starting points for each fit.
@@ -186,6 +189,7 @@ bd_analyze_csv <- function(file,
                            bayes = FALSE,
                            cure_formula = NULL,
                            cure_type = c("mixture", "promotion"),
+                           competing_submodel = FALSE,
                            output_dir = NULL,
                            n_starts = 10,
                            seed = NULL,
@@ -194,6 +198,9 @@ bd_analyze_csv <- function(file,
   analysis  <- match.arg(analysis)
   model     <- match.arg(model)
   cure_type <- match.arg(cure_type)
+  if (!is.logical(competing_submodel) || length(competing_submodel) != 1L ||
+      is.na(competing_submodel))
+    stop("'competing_submodel' must be TRUE or FALSE.", call. = FALSE)
   if (!is.null(seed)) set.seed(seed)
   say <- function(...) if (!isTRUE(quiet)) message(...)
 
@@ -271,7 +278,9 @@ bd_analyze_csv <- function(file,
     say("Fitting cause-specific models for ",
         length(setdiff(unique(dat$cause), 0)), " cause(s).")
     out$fits$CR <- .bd_try(
-      fit_bd_competing(time = dat$time, cause = dat$cause, n_starts = n_starts),
+      fit_bd_competing(time = dat$time, cause = dat$cause,
+                       submodel = competing_submodel,
+                       n_starts = n_starts),
       "fit_bd_competing", store)
 
     if (!is.null(out$fits$CR)) {

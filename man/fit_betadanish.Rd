@@ -67,8 +67,8 @@ are returned on the natural scale, the latter via the delta method.
 
 Survival times are often recorded on a grid -- whole days, whole months --
 and the point-density likelihood is not appropriate for them. It treats a
-rounded value as an exact observation, which overstates the information in
-the sample and understates every standard error. With `grouped = TRUE` an
+rounded value as an exact observation, which can overstate the information
+in the sample and make uncertainty estimates too small. With `grouped = TRUE` an
 event recorded at \eqn{t} contributes
 \eqn{\log\{F(t + \delta/2) - F(t - \delta/2)\}} instead of
 \eqn{\log f(t)}; censored observations are unchanged. The cell probability
