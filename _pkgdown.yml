@@ -53,6 +53,7 @@ reference:
     contents:
       - plot.betadanish
       - plot.bd_aft
+      - plot.bd_bayes
   - title: S3 methods
     contents:
       - summary.betadanish
@@ -75,7 +76,7 @@ reference:
       - aarset
       - leukemia
       - melanoma
-      - brain_cancer
+      - guinea_pig
 
   - title: Added in 0.3.0
     contents:
@@ -108,7 +109,7 @@ reference:
       - red
       - sbetadanish
       - sed
-  - title: Added in 0.3.0
+  - title: Simulation and visualization
     contents:
       - bd_profile_plot
       - bd_simulation_competing
@@ -125,3 +126,6 @@ articles:
       - bd-bayesian
       - bd-competing-risks
       - bd-cure-models
+  - title: Working from a file
+    contents:
+      - bd-csv-workflow
