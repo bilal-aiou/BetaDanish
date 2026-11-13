@@ -310,6 +310,22 @@ fit_betadanish <- function(formula, data, submodel = FALSE, n_starts = 10,
          "returned a runaway log-likelihood. Try method = \"NM\", or fit the ",
          "ED submodel with submodel = TRUE.", call. = FALSE)
 
+  ## Polish the selected optimum to a tight tolerance (the thesis engine used
+  ## reltol 1e-10). The default relative tolerance of maxLik, about 1.5e-8,
+  ## can leave the log-likelihood some 1e-5 short of the maximum on a sample
+  ## of a few hundred, which a profile likelihood can then exceed.
+  pol <- tryCatch(
+    maxLik::maxLik(logLik = ll_fun, grad = grad_pen, start = fit$estimate,
+                   method = method,
+                   control = list(reltol = 1e-12, iterlim = 2000)),
+    error = function(e) NULL)
+  if (!is.null(pol) && is.finite(pol$maximum) && pol$maximum >= fit$maximum &&
+      isTRUE(accept(pol))) {
+    for (an in c("bd_starts_ok", "bd_starts_rejected", "bd_loglik_spread"))
+      attr(pol, an) <- attr(fit, an)
+    fit <- pol
+  }
+
   est_log <- clamp(fit$estimate)
   est_nat <- exp(est_log)
   names(est_nat) <- sub("^log_", "", names(est_log))

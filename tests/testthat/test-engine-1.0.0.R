@@ -129,8 +129,9 @@ test_that("a fit on the edge of the box reports no AIC, SE or goodness of fit", 
   expect_true(all(is.na(g$IC)))
   expect_true(is.na(g$KS_Statistic))
   expect_output(print(summary(fit)), "supremum")
-  expect_warning(BetaDanish:::.bd_warn_diagnostics(fit$diagnostics),
-                 "edge of the parameter box")
+  ## Other diagnostics may also fire on so narrow a box; only this one matters.
+  w <- testthat::capture_warnings(BetaDanish:::.bd_warn_diagnostics(fit$diagnostics))
+  expect_true(any(grepl("edge of the parameter box", w)))
 })
 
 test_that("gof_betadanish reports three statistics on one scale", {
@@ -168,6 +169,19 @@ test_that("the default profile is extended until it closes", {
   expect_true(is.logical(p$lower_closed))
   expect_true(max(p$profile, na.rm = TRUE) <= p$logLik_max + 1e-6)
   expect_output(print(p), "endpoints")
+})
+
+test_that("the profile is measured from the highest log-likelihood reached", {
+  skip_on_cran()
+  dat <- simulate_bd_data(200, a = 1, b = 3, c = 2, k = 0.5, seed = 25)
+  fit <- suppressWarnings(
+    fit_betadanish(survival::Surv(time, status) ~ 1, data = dat,
+                   submodel = TRUE, n_starts = 3, check_identifiability = FALSE))
+  ## Pretend the fit stopped 0.01 short of its maximum.
+  short <- fit; short$logLik <- fit$logLik - 0.01
+  expect_warning(p <- bd_profile_ci(short, "b", n_grid = 15L), "stopped short")
+  expect_gte(p$logLik_max, max(p$profile, na.rm = TRUE))
+  expect_equal(p$logLik_fit, short$logLik)
 })
 
 test_that("the KL separation is zero at a = 1 and positive otherwise", {

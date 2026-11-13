@@ -110,7 +110,9 @@ bd_wald_ci <- function(object, level = 0.95) {
 #'
 #' @return An object of class `"bd_profile"` with the interval (`lower`,
 #'   `upper`), the flags `lower_closed` and `upper_closed`, `open_below` and
-#'   `open_above`, the grid, the profile log-likelihood and the critical value.
+#'   `open_above`, the grid, the profile log-likelihood, the critical value,
+#'   `logLik_fit` (the log-likelihood of the fit) and `logLik_max` (the
+#'   highest log-likelihood reached, from which the interval is measured).
 #'
 #' @details
 #' The interval is the set of values \eqn{\theta_0} for which
@@ -135,6 +137,11 @@ bd_wald_ci <- function(object, level = 0.95) {
 #' and the honest report is a lower bound rather than a point estimate with an
 #' interval. An open lower end is returned as the lowest value scanned, with
 #' `open_below = TRUE`.
+#'
+#' The interval is measured from the highest log-likelihood reached, by the fit
+#' or by the profile. If the profile rises above the fitted maximum, the fit
+#' stopped short of the optimum; a warning says so, except for a penalised fit,
+#' whose estimate is by design not the unpenalised maximum.
 #'
 #' @references
 #' Ahmad, B. (2026). *Modeling Diverse Survival Patterns: The Development and
@@ -203,6 +210,13 @@ bd_profile_ci <- function(object, parameter = "b", level = 0.95,
   res  <- lapply(grid, function(v) profile_at(v, start0))
   prof <- vapply(res, function(z) z$pl, numeric(1))
   crit <- stats::qchisq(level, df = 1) / 2
+
+  ## The interval is measured from the highest log-likelihood reached. A
+  ## profile above the fitted maximum means the fit stopped short of it (or,
+  ## for a penalised fit, that its estimate is not the unpenalised maximum).
+  ll_fit <- ll_max
+  top    <- suppressWarnings(max(prof[is.finite(prof)]))
+  if (is.finite(top) && top > ll_max) ll_max <- top
   cut  <- ll_max - crit
 
   ## ---- extension by continuation (thesis .r2_profile) ------------------------
@@ -233,6 +247,15 @@ bd_profile_ci <- function(object, parameter = "b", level = 0.95,
     n_ext <- n_ext + kk
     grid <- exp(lg)
   }
+
+  top <- suppressWarnings(max(prof[is.finite(prof)]))
+  if (is.finite(top) && top > ll_max) { ll_max <- top; cut <- ll_max - crit }
+  if (ll_max > ll_fit + 1e-6 && !isTRUE(object$penalty > 0))
+    warning(sprintf(paste0("The profile reached a log-likelihood %.6g above ",
+                           "the fitted maximum, so the fit stopped short of ",
+                           "the optimum. The interval is measured from the ",
+                           "higher value; refit with more starts."),
+                    ll_max - ll_fit), call. = FALSE)
 
   m   <- length(grid)
   dev <- ll_max - prof
@@ -269,6 +292,7 @@ bd_profile_ci <- function(object, parameter = "b", level = 0.95,
               estimate  = as.numeric(est[[parameter]]),
               lower = lower, upper = upper, level = level,
               grid = grid, profile = prof, logLik_max = ll_max,
+              logLik_fit = ll_fit,
               critical = crit,
               lower_closed = lower_closed,
               upper_closed = upper_closed,

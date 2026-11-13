@@ -16,7 +16,10 @@ same method.
   can never fall below the ED one. The deterministic grid and random starts
   of 0.3.0 are kept as further candidates, drawn in the same order. For
   complete, ungrouped samples the analytic score (thesis Appendix B.1) is
-  used as the gradient. The fitted object gains `submodel_logLik`.
+  used as the gradient. The selected optimum is then polished to a relative
+  tolerance of `1e-12`; the default of `maxLik`, about `1.5e-8`, could leave
+  the log-likelihood some `1e-5` short of the maximum. The fitted object
+  gains `submodel_logLik`.
 
 * **Parameter box.** The shape parameters are confined to the thesis box
   `[1e-4, 1e4]` (new argument `box`); the rate `k` gets the same box widened
@@ -69,7 +72,10 @@ same method.
   the profile crosses the cut-off or the parameter box is reached. Crossings
   are located by interpolation on the log scale and each endpoint is flagged
   `lower_closed` / `upper_closed`. New arguments `extend` and `max_extend`.
-  A grid supplied by the user is read exactly as before.
+  A grid supplied by the user is read exactly as before. The interval is
+  measured from the highest log-likelihood reached; if the profile rises
+  above the fitted maximum, a warning says the fit stopped short of the
+  optimum (new component `logLik_fit`).
 
 * A standard error that is zero or comes from a degenerate information
   matrix is reported as `NA`, never as `0`, in `summary()`, `bd_wald_ci()`,

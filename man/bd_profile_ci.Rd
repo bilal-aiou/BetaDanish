@@ -49,7 +49,9 @@ Default 150.}
 \value{
 An object of class `"bd_profile"` with the interval (`lower`,
   `upper`), the flags `lower_closed` and `upper_closed`, `open_below` and
-  `open_above`, the grid, the profile log-likelihood and the critical value.
+  `open_above`, the grid, the profile log-likelihood, the critical value,
+  `logLik_fit` (the log-likelihood of the fit) and `logLik_max` (the
+  highest log-likelihood reached, from which the interval is measured).
 }
 \description{
 Profiles one parameter, maximising over the others, and inverts the
@@ -78,6 +80,11 @@ the edge of the parameter box, in which case `upper` is returned as `Inf`
 and the honest report is a lower bound rather than a point estimate with an
 interval. An open lower end is returned as the lowest value scanned, with
 `open_below = TRUE`.
+
+The interval is measured from the highest log-likelihood reached, by the fit
+or by the profile. If the profile rises above the fitted maximum, the fit
+stopped short of the optimum; a warning says so, except for a penalised fit,
+whose estimate is by design not the unpenalised maximum.
 }
 \examples{
 \donttest{
