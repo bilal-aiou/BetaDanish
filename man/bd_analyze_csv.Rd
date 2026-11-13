@@ -56,8 +56,9 @@ Danish submodel (`"ED"`), or `"both"` (default) and compare them.}
 via [compare_distributions()]. Requires the `flexsurv` package; skipped
 with a recorded note if it is absent. Default `TRUE`.}
 
-\item{bayes}{Logical; also run [bayes_betadanish()]. Requires `MCMCpack`.
-Default `FALSE`, since it is slow.}
+\item{bayes}{Logical; also run [bayes_betadanish()] with its default
+adaptive sampler, which needs no extra package. Default `FALSE`, since it
+is slow.}
 
 \item{cure_formula}{Right-hand-side formula for the cure fraction when
 `analysis = "cure"`, for example `~ group`. Defaults to the retained

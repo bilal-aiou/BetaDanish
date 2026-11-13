@@ -23,3 +23,4 @@
 ^BetaDanish_Manual\.docx$
 ^BetaDanish_Manual\.pdf$
 ^data-raw$
+^BetaDanish_Manual_.*\.pdf$

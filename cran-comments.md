@@ -1,34 +1,27 @@
-## Test environments
-
-* local: Windows 11 x64, R 4.5.2
-* win-builder: R-devel and R-release
-
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
 
-## Notes for the reviewer
+* Local: Windows, R release, `devtools::check(args = "--as-cran")`.
+* win-builder: R-devel (2026-11-12 r90881 ucrt), 1 NOTE (see below).
 
-This is a feature release of an existing package (0.2.0 -> 0.3.0). Two changes are user-visible and worth flagging.
+The NOTE lists possibly misspelled words in DESCRIPTION. All are spelled
+correctly: 'Allama' is part of the university name in the cited thesis
+(Allama Iqbal Open University), 'Cramer', 'von' and 'Mises' name the
+Cramer-von Mises statistic, and 'Kullback' and 'Leibler' name the
+Kullback-Leibler divergence.
 
-**A dataset has been removed.** The `brain_cancer` dataset that shipped in
-0.1.0 and 0.2.0 is no longer included. This was done at the request of the
-maintainer's doctoral supervisor. No functionality depends on it; the
-affected example now uses the `melanoma` dataset. A new dataset,
-`guinea_pig` (Bjerkedal 1960), has been added in its place.
+## This submission
 
-**One signature has changed.** `bd_entropy_shannon()` previously computed the
-entropy by quadrature with arguments `(a, b, c, k, subdivisions, rel.tol)`.
-It now uses a closed-form expression with arguments
-`(a, b, c, k, terms, method, rel.tol, subdivisions)`. Named calls are
-unaffected, and the previous behaviour remains available as
-`method = "quadrature"`. The change is recorded in NEWS.md.
+This is a major update, 0.3.0 -> 1.0.0. It brings the estimation,
+goodness-of-fit, interval and Bayesian routines into line with the final
+analysis code of the doctoral thesis on which the package is based. All
+changes, including the behaviour changes, are listed in NEWS.md.
 
-The remaining changes are additive: structural properties (moments,
-entropies, mean residual life, stress-strength reliability, order
-statistics), penalized and grouped-likelihood estimation, profile and Wald
-intervals, and a file-driven analysis entry point.
+The package now cites a single reference, the doctoral thesis
+(Ahmad, 2026). The thesis has no DOI, so it is cited by author, year and
+title.
 
 ## Reverse dependencies
 
-There are no reverse dependencies on CRAN.
+There are currently no reverse dependencies on CRAN.
