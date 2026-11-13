@@ -101,6 +101,7 @@ reference:
       - bd_rmrl
       - bd_stress_strength
       - bd_tail_index
+      - bd_kl_submodel
       - bd_wald_ci
       - ded
       - hed
